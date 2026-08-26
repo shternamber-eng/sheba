@@ -742,7 +742,8 @@ ul, ol {
 .footer-contact {
   display: flex;
   align-items: center;
-  gap: 20px;
+  flex-wrap: wrap;
+  gap: 12px 20px;
 }
 
 .footer-fb {
@@ -760,6 +761,7 @@ ul, ol {
   color: var(--color-white);
   font-weight: 700;
   font-size: 1.05rem;
+  white-space: nowrap;
 }
 
 .footer-contact-title {
