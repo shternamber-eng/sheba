@@ -807,6 +807,26 @@ ${renderConsultationForm()}
 `,
 });
 
+// ===== 404 =============================================================
+pages.push({
+  slug: '',
+  outPath: '404.html',
+  title: 'Сторінку не знайдено | Sheba Medical Center',
+  description: 'Сторінку не знайдено.',
+  canonicalPath: '/404.html',
+  schema: ORG_SCHEMA_BASE,
+  mainHtml: `  <section class="section" style="padding-top:100px;padding-bottom:100px;text-align:center;">
+    <div class="container">
+      <h1 style="color:var(--color-pink);text-transform:none;">Сторінку не знайдено</h1>
+      <p style="font-size:1.05rem;max-width:60ch;margin:16px auto 32px;">Можливо, посилання застаріло. Скористайтеся навігацією вгорі або перейдіть на головну сторінку.</p>
+      <a href="/" class="btn btn-pink">На головну
+        <span class="btn-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+      </a>
+    </div>
+  </section>
+`,
+});
+
 // ---------------------------------------------------------------------
 // Write output
 // ---------------------------------------------------------------------
