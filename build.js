@@ -1015,11 +1015,11 @@ pages.push({
         </div>
       </div>
 
-      <!-- Approximate pin for Hotel Mir office building, Holosiivskyi Ave 70, Kyiv — verify exact coordinates before relying on this for navigation. -->
+      <!-- Map shows Sheba Medical Center's location in Israel, where treatment actually takes place. -->
       <div class="contact-map">
-        <iframe src="https://www.openstreetmap.org/export/embed.html?bbox=30.4788%2C50.3858%2C30.5208%2C50.4078&amp;layer=mapnik&amp;marker=50.3968%2C30.4998" title="Офіс MEDHUB, Голосіївський проспект 70, Київ" loading="lazy"></iframe>
+        <iframe src="https://www.openstreetmap.org/export/embed.html?bbox=34.8215%2C32.0295%2C34.8635%2C32.0515&amp;layer=mapnik&amp;marker=32.0407%2C34.8425" title="Sheba Medical Center, Ізраїль" loading="lazy"></iframe>
       </div>
-      <p class="map-caption">Голосіївський проспект, 70 (офісна будівля готелю «Мир»), Київ.</p>
+      <p class="map-caption">Карта показує розташування Sheba Medical Center в Ізраїлі, де проходить лікування.</p>
     </div>
   </section>
 
@@ -1567,11 +1567,11 @@ pages.push({
         </div>
       </div>
 
-      <!-- Approximate pin for Hotel Mir office building, Holosiivskyi Ave 70, Kyiv — verify exact coordinates before relying on this for navigation. -->
+      <!-- Map shows Sheba Medical Center's location in Israel, where treatment actually takes place. -->
       <div class="contact-map">
-        <iframe src="https://www.openstreetmap.org/export/embed.html?bbox=30.4788%2C50.3858%2C30.5208%2C50.4078&amp;layer=mapnik&amp;marker=50.3968%2C30.4998" title="MEDHUB office, 70 Holosiivskyi Avenue, Kyiv" loading="lazy"></iframe>
+        <iframe src="https://www.openstreetmap.org/export/embed.html?bbox=34.8215%2C32.0295%2C34.8635%2C32.0515&amp;layer=mapnik&amp;marker=32.0407%2C34.8425" title="Sheba Medical Center, Israel" loading="lazy"></iframe>
       </div>
-      <p class="map-caption">70 Holosiivskyi Avenue (Hotel Mir office building), Kyiv, Ukraine.</p>
+      <p class="map-caption">The map shows the location of Sheba Medical Center in Israel, where treatment takes place.</p>
     </div>
   </section>
 
