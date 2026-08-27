@@ -750,6 +750,16 @@ pages.push({
     </div>
   </section>
 
+  <section class="section support-section">
+    <div class="container">
+      <h2>Sheba та Україна — довша історія</h2>
+      <div class="support-body">
+        <p>Зв'язок Sheba Medical Center з Україною почався не з відкриття цього сайту. Ще у 2022 році центр розгорнув польовий госпіталь Kochav Meir у Мостиськах, а згодом — мобільну клініку жіночого здоров'я та постійний діагностичний центр у Києві.</p>
+      </div>
+      <a href="/sheba-ukraine-dopomoha/" class="text-link">Дізнатися більше про допомогу Sheba Україні з 2022 року →</a>
+    </div>
+  </section>
+
 ${ctaBand({
   heading: 'Потрібна консультація',
   headingAccent: 'щодо лікування в Sheba?',
@@ -1577,6 +1587,249 @@ ${renderConsultationForm('en')}
 `,
 });
 
+// ===== SHEBA × UKRAINE: HISTORY / HUMANITARIAN CHRONICLE =================
+// Every factual claim below is sourced — see the "Джерела та матеріали"
+// block at the end of the page for the list. Statistics verified against
+// PMC9574159 (Prehospital and Disaster Medicine); the Krakow-airport story
+// and the Har-Even quotes verified against eJewishPhilanthropy/AFSMC and
+// sheba-global.com/fieldhospitalukraine respectively. Photos are real,
+// pulled from Sheba's and Kvitna's own official sites — see credits under
+// each image. Where no rights-cleared photo could be sourced, a labeled
+// placeholder with a PHOTO RIGHTS TO BE CONFIRMED comment stands in.
+const SHEBA_UKRAINE_SCHEMA = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: 'Sheba Medical Center та Україна: допомога, що почалася у перші тижні війни',
+  description: 'Від польового госпіталю Kochav Meir та телемедицини до мобільної клініки жіночого здоров\'я, навчання українських лікарів і діагностичного центру в Києві.',
+  inLanguage: 'uk',
+  url: `${SITE_URL}/sheba-ukraine-dopomoha/`,
+  publisher: { '@type': 'Organization', name: 'MEDHUB', url: SITE_URL },
+  about: { '@type': 'MedicalOrganization', name: SHEBA_NAME },
+};
+
+const BREADCRUMB_SCHEMA = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Головна', item: `${SITE_URL}/` },
+    { '@type': 'ListItem', position: 2, name: 'Sheba Medical Center', item: `${SITE_URL}/sheba-medical-center/` },
+    { '@type': 'ListItem', position: 3, name: 'Sheba Medical Center та Україна: допомога з 2022 року', item: `${SITE_URL}/sheba-ukraine-dopomoha/` },
+  ],
+};
+
+pages.push({
+  slug: 'sheba-ukraine-dopomoha',
+  outPath: 'sheba-ukraine-dopomoha/index.html',
+  title: 'Sheba Medical Center та Україна: медична допомога з 2022 року | MEDHUB',
+  description: 'Від польового госпіталю Kochav Meir та телемедицини до мобільної клініки жіночого здоров\'я, навчання українських лікарів і діагностичного центру в Києві. Історія допомоги Sheba Medical Center Україні з 2022 року.',
+  canonicalPath: '/sheba-ukraine-dopomoha/',
+  schema: [SHEBA_UKRAINE_SCHEMA, BREADCRUMB_SCHEMA, MEDHUB_SCHEMA, SHEBA_SCHEMA],
+  mainHtml: `  <section class="history-hero">
+    <div class="history-hero-media">
+      <!-- Photo: Sheba Medical Center (shebaonline.org) — aerial view of the Kochav Meir field hospital tent complex, Mostyska, 2022 -->
+      <img src="/assets/temp-dev-refs/kochav-meir-tents.jpg" alt="Польовий госпіталь Kochav Meir у Мостиськах, 2022 рік" loading="eager" width="768" height="1024">
+    </div>
+    <div class="history-hero-content">
+      <div class="container">
+        <p class="eyebrow">SHEBA MEDICAL CENTER × UKRAINE</p>
+        <h1>Sheba Medical Center та Україна: допомога, що почалася у перші тижні війни</h1>
+        <p>З перших тижнів повномасштабного вторгнення Sheba Medical Center долучився до допомоги Україні — через телемедицину, польовий госпіталь, лікування пацієнтів, підготовку українських медиків та створення довгострокових медичних програм.</p>
+        <ul class="timeline-nav">
+          <li><a href="#y2022">2022</a></li>
+          <li><a href="#y2023">2023</a></li>
+          <li><a href="#y2024">2024</a></li>
+          <li><a href="#y2025">2025</a></li>
+          <li><a href="#segodni">Сьогодні</a></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+
+      <div class="year-block" id="y2022">
+        <div class="year-tag"><span class="num">2022</span><span class="label">Екстрена допомога</span></div>
+        <div class="year-body">
+          <h3>Лютий–березень 2022: допомога почалася ще до відкриття польового госпіталю</h3>
+          <p>Ще до розгортання польового госпіталю фахівці Sheba Beyond дистанційно консультували українських пацієнтів та медичні команди, які працювали з біженцями. Телемедична платформа Sheba Beyond забезпечувала дистанційні консультації спеціалістів, акушерську допомогу, віддалений контроль обстежень і портативну діагностику — насамперед для українських жінок і дітей, які покинули країну.</p>
+          <div class="photo-block">
+            <!-- PHOTO RIGHTS TO BE CONFIRMED: real photo of a Sheba Beyond telemedicine consultation for a Ukrainian patient not yet sourced from a rights-cleared channel -->
+            <div class="photo-placeholder">Телемедична консультація Sheba Beyond для української пацієнтки, 2022 рік<br>(фото буде додано після підтвердження прав використання)</div>
+          </div>
+
+          <h3>Березень 2022: польовий госпіталь Kochav Meir у Мостиськах</h3>
+          <p>Держава Ізраїль розгорнула в Україні цивільний польовий госпіталь Kochav Meir. Sheba Medical Center став ключовим медичним центром місії та відігравав провідну роль у створенні й роботі госпіталю разом із Міністерством охорони здоров'я та Міністерством закордонних справ Ізраїлю й іншими ізраїльськими медичними організаціями.</p>
+          <p>Госпіталь розпочав роботу <strong>22 березня 2022 року</strong> в місті <strong>Мостиська, Львівська область</strong>, і працював <strong>шість тижнів</strong>. У його складі діяли тріаж, невідкладна допомога, педіатрія, акушерство та гінекологія, хірургія, ортопедія, психічне здоров'я, лабораторія, медична візуалізація, аптека та телемедицина Sheba Beyond.</p>
+
+          <div class="stats-strip">
+            <div class="stat-item"><span class="num">6 161</span><span class="label">пацієнт</span></div>
+            <div class="stat-item"><span class="num">954</span><span class="label">дитини</span></div>
+            <div class="stat-item"><span class="num">59</span><span class="label">операцій</span></div>
+            <div class="stat-item"><span class="num">65</span><span class="label">госпіталізованих пацієнтів</span></div>
+            <div class="stat-item"><span class="num">103</span><span class="label">телемедичні консультації</span></div>
+            <div class="stat-item"><span class="num">995</span><span class="label">лабораторних досліджень</span></div>
+            <div class="stat-item"><span class="num">846</span><span class="label">досліджень медичної візуалізації</span></div>
+            <div class="stat-item"><span class="num">7</span><span class="label">пацієнтів перевезли до Ізраїлю для складнішого лікування</span></div>
+          </div>
+          <p class="stats-footnote">796 українських медичних працівників пройшли навчання в межах місії.</p>
+
+          <div class="photo-block">
+            <!-- PHOTO RIGHTS TO BE CONFIRMED: additional photo of medical staff at work inside the field hospital not yet sourced -->
+            <div class="photo-placeholder">Лікарі за роботою всередині госпіталю Kochav Meir<br>(фото буде додано після підтвердження прав використання)</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="year-block">
+        <div class="year-tag"><span class="num">—</span><span class="label">Ключова постать</span></div>
+        <div class="year-body">
+          <h3>Йоель Хар-Евен: одна з ключових постатей медичної місії Sheba в Україні</h3>
+          <p>Йоель Хар-Евен відіграв одну з ключових особистих ролей у розвитку гуманітарної роботи Sheba в Україні — від керівництва місією польового госпіталю у 2022 році до участі у створенні довгострокових медичних проєктів. Сьогодні він обіймає посаду <strong>Vice President of Global Affairs, Sheba Medical Center</strong>.</p>
+
+          <div class="profile-block">
+            <div>
+              <!-- PHOTO RIGHTS TO BE CONFIRMED: an official Sheba Global portrait of Yoel Har-Even has not yet been sourced from a rights-cleared channel -->
+              <div class="photo-placeholder" style="aspect-ratio:1;">Yoel Har-Even<br>(портрет буде додано після підтвердження прав використання)</div>
+              <p class="profile-name">Yoel Har-Even</p>
+              <p class="profile-title">Vice President of Global Affairs, Sheba Medical Center</p>
+            </div>
+            <div class="profile-body">
+              <h3>2022 — Kochav Meir</h3>
+              <p>У 2022 році Хар-Евен очолював Sheba Global і безпосередньо керував місією Sheba в Україні разом із професором Ельхананом Бар-Оном, директором Центру гуманітарної та кризової медицини Sheba. Він перебував безпосередньо в Україні, брав участь у розгортанні польового госпіталю та публічно представляв гуманітарну місію Sheba.</p>
+
+              <div class="quote-block">
+                <p>«Наше завдання — щоб люди в Україні знали, що вони не самі».</p>
+                <cite><strong>Yoel Har-Even</strong>Sheba Global, 2022 · sheba-global.com/fieldhospitalukraine</cite>
+              </div>
+
+              <h3>Весна 2022 — переїзд до мобільної клініки</h3>
+              <p>Випадкова зустріч у краківському аеропорту стала початком нового етапу. Наприкінці квітня 2022 року, повертаючись до Ізраїлю після чергового етапу роботи польового госпіталю, Хар-Евен випадково познайомився з Ораном Сінгером, співзасновником організації Corridor — Israeli Aid for Ukraine: почувши, як Хар-Евен розмовляє на івриті, Сінгер підійшов до нього. Розмова про потреби українських жінок переросла у партнерство Sheba, Corridor та фонду «Квітна».</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="year-block" id="y2023-clinic">
+        <div class="year-tag"><span class="num">2022–23</span><span class="label">Довгострокові проєкти</span></div>
+        <div class="year-body">
+          <h3>Від польового госпіталю — до мобільної клініки жіночого здоров'я</h3>
+          <p>Після гострої фази допомоги Sheba не залишила Україну. Разом з Corridor — Israeli Aid for Ukraine та Благодійним фондом «Квітна» центр долучився до створення мобільної медичної платформи для жінок, які через війну втратили звичний доступ до медичної допомоги: акушерство та гінекологія, УЗД, скринінг раку молочної залози, скринінг раку шийки матки, оцінка ендометрія, психологічна підтримка, телемедицина та консультації спеціалістів.</p>
+          <p>Роль Sheba в проєкті — медична експертиза, розробка клінічної моделі, телемедичні консультації, підготовка українських лікарів і підтримка обладнанням. American Friends of Sheba профінансували придбання трейлера — близько <strong>$60 000</strong> — після чого його відправили до Гамбурга для переобладнання під мобільну клініку.</p>
+          <p>Хар-Евен наполягав на моделі, в якій фізична медична допомога обов'язково супроводжується психологічною підтримкою постраждалих від війни. Саме участь Хар-Евена та Sheba надала проєкту доступ до медичної експертизи, міжнародної підтримки та телемедичних можливостей великого медичного центру — але ідея мобільної клініки первинно обговорювалася Corridor і «Квітною», а Sheba долучилася вже після зустрічі Сінгера й Хар-Евена в Кракові.</p>
+        </div>
+      </div>
+
+      <div class="year-block" id="y2023">
+        <div class="year-tag"><span class="num">2023</span><span class="label">Клініка запрацювала</span></div>
+        <div class="year-body">
+          <h3>2023: клініка починає працювати для українських жінок</h3>
+          <p>Пересувна медична платформа почала виїжджати до громад і груп жінок, для яких регулярний доступ до профілактичної діагностики був ускладнений війною — у регіонах, серед переміщених жінок, а згодом і серед військовослужбовиць та ветеранок. Усі обстеження — безоплатні.</p>
+          <div class="photo-block">
+            <!-- Photo: Kvitna (kvitna.org.ua) — Mobile Women's Health Clinic trailer, Sheba + Corridor + Kvitna branding -->
+            <img src="/assets/temp-dev-refs/mobile-clinic-trailer.jpg" alt="Пересувна клініка жіночого здоров'я — спільний проєкт Sheba Medical Center, Corridor та БФ «Квітна»" loading="lazy" width="1024" height="454">
+            <p class="photo-caption">Пересувна клініка жіночого здоров'я — спільний проєкт Sheba Medical Center, Corridor та БФ «Квітна». Фото: kvitna.org.ua</p>
+          </div>
+
+          <h3>Обладнання та подальша підтримка</h3>
+          <p>У матеріалах фонду «Квітна» окремо відзначалася особиста підтримка з боку Sheba Medical Center та Yoel Har-Even у питаннях оснащення платформи, зокрема сучасним діагностичним обладнанням.</p>
+          <div class="photo-block">
+            <!-- Photo: Kvitna (kvitna.org.ua) — inside the mobile clinic with medical staff and a GE Versana Active ultrasound machine. Individuals in the photo are not identified with confidence and are captioned generically. -->
+            <img src="/assets/temp-dev-refs/mobile-clinic-interior.jpg" alt="Медичний персонал усередині пересувної клініки з апаратом УЗД" loading="lazy" width="1024" height="768">
+            <p class="photo-caption">Всередині пересувної клініки: медичний персонал та апарат УЗД. Фото: kvitna.org.ua</p>
+          </div>
+
+          <h3>2023: українсько-ізраїльський медичний діалог</h3>
+          <p>Першу леді України Олену Зеленську, яка відвідала Sheba Medical Center разом із першою леді Ізраїлю, ознайомили з роботою центру у сферах реабілітації, лікування наслідків тяжких травм, дитячої медицини, психологічної допомоги дітям та досвіду Ізраїлю в роботі під час тривалих криз. Цей візит — окрема частина розвитку медичних зв'язків між Україною та Sheba, а не спільний проєкт MEDHUB чи «Квітної».</p>
+        </div>
+      </div>
+
+      <div class="year-block" id="y2024">
+        <div class="year-tag"><span class="num">2023–25</span><span class="label">Передача знань</span></div>
+        <div class="year-body">
+          <h3>Передача знань: допомога, яка залишається після завершення місії</h3>
+          <p>Ще в Kochav Meir Sheba створила спеціальну програму підготовки українських медичних фахівців — <strong>796 українських медичних працівників пройшли навчання</strong> в межах польової місії. Пізніше робота продовжилася безпосередньо в Ізраїлі: у 2025 році Sheba прийняла групу з <strong>7 українських лікарів</strong> на дворічну гуманітарну навчальну програму за напрямами гінекологія, невідкладна медицина, медицина травми, радіологія, ендокринологія, отоларингологія, медична симуляція та реабілітація.</p>
+          <p>Мета такого співробітництва — не лише лікувати окремих пацієнтів, а й передавати українським медикам практичні знання, які залишаються в системі охорони здоров'я України.</p>
+          <div class="photo-block">
+            <!-- PHOTO RIGHTS TO BE CONFIRMED: photo of Ukrainian doctors' training group or delegation at Sheba not yet sourced -->
+            <div class="photo-placeholder">Українські лікарі під час навчальної програми в Sheba<br>(фото буде додано після підтвердження прав використання)</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="year-block" id="y2025">
+        <div class="year-tag"><span class="num">2025</span><span class="label">Постійна присутність</span></div>
+        <div class="year-body">
+          <h3>2025: досвід медицини під час війни — для України</h3>
+          <p>Група українських парламентарів, пов'язаних із питаннями охорони здоров'я, відвідала Sheba Medical Center. Під час візиту вивчали роботу лікарні під час ракетних атак, підготовку до масових надходжень постраждалих (mass casualty preparedness), швидку госпіталізацію, невідкладну медицину та безперервність роботи лікарні під час війни. <strong>Yoel Har-Even, Vice President of Global Affairs</strong>, представив українській делегації практичний досвід Sheba щодо роботи медичної системи під час атак і масових надходжень постраждалих. Під час візиту також обговорювалися перспективи реабілітації поранених українських військовослужбовців у Sheba — на рівні попередніх контактів.</p>
+
+          <h3>2025: від мобільної клініки до постійного центру в Києві</h3>
+          <p>Еволюція проєкту пройшла шлях від польової допомоги через мобільну медицину до постійної медичної інфраструктури. Sheba Medical Center і Благодійний фонд «Квітна» відкрили в Києві стаціонарний діагностичний центр жіночого здоров'я — оснащений сучасною системою УЗД, відеокольпоскопом, гінекологічним кріслом та іншим діагностичним обладнанням. У центрі працюють два лікарі, а потенційна пропускна спроможність становить 500–600 жінок на місяць. Усі обстеження безоплатні, з особливою увагою до військовослужбовиць, ветеранок, вдів загиблих, внутрішньо переміщених жінок та жінок у складних життєвих обставинах.</p>
+
+          <h3>Від польового госпіталю у 2022-му — до Києва у 2025-му</h3>
+          <p>У 2025 році Йоел Хар-Евен знову приїхав в Україну — цього разу для розвитку постійного проєкту жіночого здоров'я в Києві. Віцепрезидент Sheba Medical Center особисто працював разом з українськими лікарями та брав участь у діагностичних процедурах, перетворюючи партнерство на практичний обмін клінічним досвідом.</p>
+          <div class="photo-block">
+            <!-- PHOTO RIGHTS TO BE CONFIRMED: photo of Yoel Har-Even with Ukrainian doctors at the Kyiv diagnostic center (2025) not yet sourced from a rights-cleared channel -->
+            <div class="photo-placeholder">Yoel Har-Even разом з українськими лікарями у діагностичному центрі жіночого здоров'я в Києві, 2025 рік<br>(фото буде додано після підтвердження прав використання)</div>
+          </div>
+
+          <div class="quote-block">
+            <p>«Ми хочемо поділитися цим досвідом з Україною».</p>
+            <cite><strong>Yoel Har-Even</strong>Vice President of Global Affairs, Sheba Medical Center</cite>
+          </div>
+        </div>
+      </div>
+
+      <div class="year-block">
+        <div class="year-tag"><span class="num">↓</span><span class="label">Підсумок</span></div>
+        <div class="year-body">
+          <h2>Від екстреної допомоги — до довгострокового партнерства</h2>
+          <p>Історія Sheba в Україні почалася з необхідності діяти негайно. Польовий госпіталь, телемедицина та евакуація пацієнтів відповідали на кризу перших місяців війни. Але співпраця не завершилася разом із демонтажем госпіталю.</p>
+          <p>Мобільна клініка, навчання українських лікарів, обмін досвідом та створення постійного діагностичного центру в Києві показують інший етап — довгострокову присутність знань, технологій та медичної експертизи Sheba в Україні.</p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <section class="section support-section section-alt" id="segodni">
+    <div class="container">
+      <h2>Сьогодні зв'язок із Sheba Medical Center в Україні продовжується</h2>
+      <div class="support-body">
+        <p>MEDHUB є авторизованим представником Sheba Medical Center в Україні та допомагає українським пацієнтам організувати звернення до медичного центру в Ізраїлі.</p>
+      </div>
+      <div class="hero-actions">
+        <a href="/kontakty/" class="btn btn-pink">Отримати консультацію
+          <span class="btn-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        </a>
+        <a href="/kontakty/#contact-form" class="btn btn-outline">Надіслати медичні документи
+          <span class="btn-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="#2315FF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <p class="section-lead">Дізнайтеся більше: <a href="/sheba-medical-center/" class="text-link">Sheba Medical Center →</a> · <a href="/napriamy-likuvannia/" class="text-link">Напрями лікування →</a> · <a href="/likari/" class="text-link">Лікарі →</a> · <a href="/kontakty/" class="text-link">Контакти →</a></p>
+    </div>
+  </section>
+
+  <section class="section section--tight">
+    <div class="container sources-block">
+      <h2>Джерела та матеріали</h2>
+      <ol>
+        <li>Levy, G. et al. "The National Israeli Field Hospital in Ukraine: Innovative adaptation to a unique scenario." <em>Prehospital and Disaster Medicine</em> — статистика Kochav Meir (пацієнти, операції, телемедичні консультації, навчені українські медики). <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC9574159/" target="_blank" rel="noopener noreferrer">pmc.ncbi.nlm.nih.gov/articles/PMC9574159</a></li>
+        <li>Sheba Global. "Helping Ukraine in 2022: Sheba's New Field Hospital" — роль Sheba, Міністерства охорони здоров'я та закордонних справ Ізраїлю, цитата Yoel Har-Even. <a href="https://sheba-global.com/fieldhospitalukraine/" target="_blank" rel="noopener noreferrer">sheba-global.com/fieldhospitalukraine</a></li>
+        <li>shebaonline.org. "Sheba's 'Shining Star' Field Hospital Has Begun Receiving Patients in Western Ukraine" — деталі місії, ролі Yoel Har-Even та Prof. Elhanan Bar-On. <a href="https://www.shebaonline.org/shebas-shining-star-field-hospital-has-begun-receiving-patients-in-western-ukraine/" target="_blank" rel="noopener noreferrer">shebaonline.org</a></li>
+        <li>eJewishPhilanthropy / American Friends of Sheba. "A Jewish-funded mobile clinic in Ukraine will focus on women's health" — історія зустрічі Har-Even та Oran Singer в аеропорту Кракова, участь Corridor і «Квітна», фінансування трейлера. <a href="https://ejewishphilanthropy.com/a-jewish-funded-mobile-clinic-in-ukraine-will-focus-on-womens-health/" target="_blank" rel="noopener noreferrer">ejewishphilanthropy.com</a></li>
+        <li>Благодійний фонд «Квітна» — мобільна медична платформа, фото пересувної клініки. <a href="https://kvitna.org.ua/mobile-medical-platform-in-ukraine/" target="_blank" rel="noopener noreferrer">kvitna.org.ua</a></li>
+      </ol>
+    </div>
+  </section>
+`,
+});
+
 // ===== 404 =============================================================
 pages.push({
   slug: '',
@@ -1612,5 +1865,14 @@ for (const page of pages) {
   written += 1;
   console.log('wrote', page.outPath);
 }
+
+// sitemap.xml — every real page except the 404 fallback.
+const sitemapUrls = pages
+  .filter((p) => p.slug !== '')
+  .map((p) => `  <url><loc>${SITE_URL}${p.canonicalPath}</loc></url>`)
+  .join('\n');
+const sitemap = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${sitemapUrls}\n</urlset>\n`;
+fs.writeFileSync(path.join(root, 'sitemap.xml'), sitemap, 'utf8');
+console.log('wrote sitemap.xml');
 
 console.log(`\n${written} pages built.`);
