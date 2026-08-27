@@ -833,42 +833,53 @@ ${ctaBand({
 `,
 });
 
-// ===== 4. ЛІКАРІ (catalog, demo data) ===================================
+// ===== 4. КОМАНДА SHEBA (real International Patient Department staff) ===
+// Source: https://www.shebaonline.ru/nashi-sotrudniki/ — names, titles and
+// languages are as published there. These are medical coordinators/curators/
+// consultants of Sheba's International Patient Department, not attending
+// physicians — do not relabel them with clinical specialties they don't hold.
 const DOCTORS = [
-  ['ЙБ', 'Д-р Йоав Барак', 'Кардіологія', 'Кардіологічний центр'],
-  ['МК', 'Д-р Міріам Коен', 'Онкологія', 'Онкологічний центр'],
-  ['ДЛ', 'Д-р Даніель Леві', 'Неврологія', 'Відділення неврології'],
-  ['РА', 'Д-р Рут Авраам', 'Ортопедія', 'Відділення ортопедії'],
-  ['ІШ', 'Д-р Ітай Шапіро', 'Гематологія', 'Відділення гематології'],
-  ['НП', 'Д-р Ноа Перець', 'Педіатрія', 'Дитяча лікарня'],
+  ['/assets/team/mika-amram.jpg', 'Міка Амрам', 'Директорка департаменту міжнародних пацієнтів', 'іврит, англійська'],
+  ['/assets/team/vered-cohen.jpg', 'Веред Коен Хершафт', 'Керівниця департаменту глобальних медичних послуг', ''],
+  ['/assets/team/yelena-kolesnik.jpg', 'Олена Колесник', 'Старша медична координаторка', 'іврит, російська, англійська'],
+  ['/assets/team/olya-mayzeleva.jpg', 'Ольга Майзелева', 'Керівниця відділу медичного консультування', 'іврит, російська'],
+  ['/assets/team/olesya-chernihovski.jpg', 'Олеся Черниховська', 'Керівниця напряму ШІ, інновацій та клінічної інтеграції', 'іврит, російська, англійська'],
+  ['/assets/team/amir-roitman.jpg', 'Амір Ройтман', 'Медичний консультант', 'іврит, англійська, російська'],
+  ['/assets/team/hannah-or.jpg', 'Ханна Ор', 'Медична консультантка', 'іврит, англійська'],
+  ['/assets/team/nikita-zubenko.jpg', 'Нікіта Зубенко', 'Медичний консультант', 'іврит, російська, англійська'],
+  ['/assets/team/bogdan-medovar.jpg', 'Богдан Медовар', 'Медичний куратор', 'іврит, російська, англійська, українська'],
+  ['/assets/team/vera-gerova.jpg', 'Віра Герова', 'Медична координаторка у сфері гінекології, онкогінекології та ЕКЗ', 'іврит, російська'],
+  ['/assets/team/victoria-zen.jpg', 'Вікторія Зен', 'Медична координаторка у сфері гематоонкології', 'іврит, російська, англійська'],
+  ['/assets/team/galit-goman.jpg', 'Галіт Гоман', 'Медична координаторка', 'іврит, російська, англійська'],
+  ['/assets/team/rimma-pustovoitovska.jpg', 'Рімма Пустовойтовська', 'Медична координаторка у сфері дитячої онкології', 'іврит, російська, англійська'],
+  ['/assets/team/milana-tilyuk.jpg', 'Мілана Тілюк', 'Медична координаторка у сфері педіатрії та дитячої гематоонкології', 'іврит, російська'],
 ];
 
 pages.push({
   slug: 'likari',
   outPath: 'likari/index.html',
-  title: 'Лікарі Sheba Medical Center | MEDHUB',
-  description: 'Лікарі Sheba Medical Center за спеціальністю та відділенням. MEDHUB організовує консультацію з профільним спеціалістом для українських пацієнтів.',
+  title: 'Команда Sheba Medical Center | MEDHUB',
+  description: 'Медичні консультанти та координатори департаменту міжнародних пацієнтів Sheba Medical Center. MEDHUB координує звернення українських пацієнтів до цієї команди.',
   canonicalPath: '/likari/',
   schema: [MEDHUB_SCHEMA, SHEBA_SCHEMA],
-  mainHtml: `${titleBand('Лікарі Sheba Medical Center')}
+  mainHtml: `${titleBand('Команда Sheba Medical Center')}
 
   <section class="section page-intro">
     <div class="container">
-      <p>Координатор MEDHUB підбирає профільного спеціаліста Sheba Medical Center відповідно до медичного питання пацієнта. Нижче — приклад того, як буде виглядати каталог лікарів центру.</p>
-      <p class="doctor-demo-note">Профілі нижче — демонстраційні заповнювачі (demo data). Реальні профілі лікарів Sheba Medical Center буде додано найближчим часом.</p>
+      <p>Департамент міжнародних пацієнтів Sheba Medical Center супроводжує звернення іноземних пацієнтів — від першого запиту до організації лікування. MEDHUB координує звернення українських пацієнтів саме до цієї команди.</p>
     </div>
   </section>
 
   <section class="section section--tight">
     <div class="container">
       <div class="doctor-grid">
-${DOCTORS.map(([initials, name, specialty, dept]) => `        <div class="doctor-card">
-          <div class="doctor-avatar" aria-hidden="true">${initials}</div>
+${DOCTORS.map(([photo, name, title, langs]) => `        <div class="doctor-card">
+          <img class="doctor-avatar" src="${photo}" alt="${name}" width="88" height="88" loading="lazy">
           <h3>${name}</h3>
-          <span class="doctor-specialty">${specialty}</span>
-          <span class="doctor-dept">${dept}, Sheba Medical Center</span>
-          <p class="doctor-desc">Профіль лікаря буде доповнено освітою, досвідом і напрямами практики.</p>
-          <a href="/kontakty/" class="btn btn-outline btn-sm">Отримати консультацію цього спеціаліста
+          <span class="doctor-specialty">${title}</span>
+          <span class="doctor-dept">Sheba Medical Center — департамент міжнародних пацієнтів</span>
+          ${langs ? `<p class="doctor-desc">Мови спілкування: ${langs}.</p>` : ''}
+          <a href="/kontakty/" class="btn btn-outline btn-sm">Звернутися через MEDHUB
             <span class="btn-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="#2315FF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
           </a>
         </div>`).join('\n')}
@@ -878,8 +889,8 @@ ${DOCTORS.map(([initials, name, specialty, dept]) => `        <div class="doctor
 
 ${ctaBand({
   heading: 'Потрібна допомога',
-  headingAccent: 'з підбором лікаря?',
-  text: 'Надішліть медичні документи — координатор MEDHUB підбере профільного спеціаліста Sheba Medical Center.',
+  headingAccent: 'з організацією лікування?',
+  text: 'Надішліть медичні документи — MEDHUB передасть звернення команді департаменту міжнародних пацієнтів Sheba Medical Center.',
   emphasis: '',
   primaryLabel: 'Отримати консультацію',
   primaryHref: '/kontakty/',
@@ -1382,43 +1393,52 @@ ${ctaBand({
 `,
 });
 
-// ===== EN 5. DOCTORS (catalog, demo data) ===============================
+// ===== EN 5. SHEBA TEAM (real International Patient Department staff) ===
+// Source: https://www.shebaonline.ru/nashi-sotrudniki/ — see the DOCTORS
+// array above for the sourcing note; these are the English equivalents.
 const DOCTORS_EN = [
-  ['YB', 'Dr. Yoav Barak', 'Cardiology', 'Cardiology Center'],
-  ['MC', 'Dr. Miriam Cohen', 'Oncology', 'Oncology Center'],
-  ['DL', 'Dr. Daniel Levy', 'Neurology', 'Neurology Department'],
-  ['RA', 'Dr. Ruth Avraham', 'Orthopedics', 'Orthopedics Department'],
-  ['IS', 'Dr. Itai Shapiro', 'Hematology', 'Hematology Department'],
-  ['NP', 'Dr. Noa Peretz', 'Pediatrics', "Children's Hospital"],
+  ['/assets/team/mika-amram.jpg', 'Mika Amram', 'Director of the International Patient Department', 'Hebrew, English'],
+  ['/assets/team/vered-cohen.jpg', 'Vered Cohen Hershaft', 'Head of the Global Medical Services Department', ''],
+  ['/assets/team/yelena-kolesnik.jpg', 'Elena Kolesnik', 'Senior Medical Coordinator', 'Hebrew, Russian, English'],
+  ['/assets/team/olya-mayzeleva.jpg', 'Olga Mayzeleva', 'Head of the Medical Consulting Department', 'Hebrew, Russian'],
+  ['/assets/team/olesya-chernihovski.jpg', 'Olesya Chernihovsky', 'Head of AI, Innovation & Clinical Integration', 'Hebrew, Russian, English'],
+  ['/assets/team/amir-roitman.jpg', 'Amir Roitman', 'Medical Consultant', 'Hebrew, English, Russian'],
+  ['/assets/team/hannah-or.jpg', 'Hannah Or', 'Medical Consultant', 'Hebrew, English'],
+  ['/assets/team/nikita-zubenko.jpg', 'Nikita Zubenko', 'Medical Consultant', 'Hebrew, Russian, English'],
+  ['/assets/team/bogdan-medovar.jpg', 'Bogdan Medovar', 'Medical Curator', 'Hebrew, Russian, English, Ukrainian'],
+  ['/assets/team/vera-gerova.jpg', 'Vera Gerova', 'Medical Coordinator — Gynecology, Oncogynecology & IVF', 'Hebrew, Russian'],
+  ['/assets/team/victoria-zen.jpg', 'Victoria Zen', 'Medical Coordinator — Hemato-Oncology', 'Hebrew, Russian, English'],
+  ['/assets/team/galit-goman.jpg', 'Galit Goman', 'Medical Coordinator', 'Hebrew, Russian, English'],
+  ['/assets/team/rimma-pustovoitovska.jpg', 'Rimma Pustovoytovskaya', 'Medical Coordinator — Pediatric Oncology', 'Hebrew, Russian, English'],
+  ['/assets/team/milana-tilyuk.jpg', 'Milana Tilyuk', 'Medical Coordinator — Pediatrics & Pediatric Hemato-Oncology', 'Hebrew, Russian'],
 ];
 
 pages.push({
   slug: 'likari',
   lang: 'en',
   outPath: 'en/doctors/index.html',
-  title: 'Sheba Medical Center Doctors | MEDHUB',
-  description: 'Sheba Medical Center doctors by specialty and department. MEDHUB arranges a consultation with the right specialist for Ukrainian patients.',
+  title: 'Sheba Medical Center Team | MEDHUB',
+  description: "Medical consultants and coordinators of Sheba Medical Center's International Patient Department. MEDHUB coordinates Ukrainian patient inquiries to this team.",
   canonicalPath: '/en/doctors/',
   schema: [MEDHUB_SCHEMA_EN, SHEBA_SCHEMA],
-  mainHtml: `${titleBand('Sheba Medical Center Doctors')}
+  mainHtml: `${titleBand('Sheba Medical Center Team')}
 
   <section class="section page-intro">
     <div class="container">
-      <p>A MEDHUB coordinator selects the right Sheba Medical Center specialist based on the patient's medical question. Below is an example of how the center's doctor directory will look.</p>
-      <p class="doctor-demo-note">The profiles below are demo placeholders. Real Sheba Medical Center doctor profiles will be added soon.</p>
+      <p>Sheba Medical Center's International Patient Department supports foreign patients from the first inquiry through arranging treatment. MEDHUB coordinates Ukrainian patient inquiries to this team.</p>
     </div>
   </section>
 
   <section class="section section--tight">
     <div class="container">
       <div class="doctor-grid">
-${DOCTORS_EN.map(([initials, name, specialty, dept]) => `        <div class="doctor-card">
-          <div class="doctor-avatar" aria-hidden="true">${initials}</div>
+${DOCTORS_EN.map(([photo, name, title, langs]) => `        <div class="doctor-card">
+          <img class="doctor-avatar" src="${photo}" alt="${name}" width="88" height="88" loading="lazy">
           <h3>${name}</h3>
-          <span class="doctor-specialty">${specialty}</span>
-          <span class="doctor-dept">${dept}, Sheba Medical Center</span>
-          <p class="doctor-desc">This doctor's profile will be supplemented with education, experience, and areas of practice.</p>
-          <a href="/en/contacts/" class="btn btn-outline btn-sm">Request a Consultation with This Specialist
+          <span class="doctor-specialty">${title}</span>
+          <span class="doctor-dept">Sheba Medical Center — International Patient Department</span>
+          ${langs ? `<p class="doctor-desc">Languages: ${langs}.</p>` : ''}
+          <a href="/en/contacts/" class="btn btn-outline btn-sm">Contact via MEDHUB
             <span class="btn-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="#2315FF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
           </a>
         </div>`).join('\n')}
@@ -1428,8 +1448,8 @@ ${DOCTORS_EN.map(([initials, name, specialty, dept]) => `        <div class="doc
 
 ${ctaBand({
   heading: 'Need help',
-  headingAccent: 'choosing a doctor?',
-  text: 'Send your medical documents — a MEDHUB coordinator will select the right Sheba Medical Center specialist.',
+  headingAccent: 'arranging treatment?',
+  text: "Send your medical documents — MEDHUB will pass your inquiry to Sheba Medical Center's International Patient Department team.",
   emphasis: '',
   primaryLabel: 'Get a Consultation',
   primaryHref: '/en/contacts/',

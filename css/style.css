@@ -891,8 +891,8 @@ ul, ol {
 }
 
 .doctor-avatar {
-  width: 64px;
-  height: 64px;
+  width: 88px;
+  height: 88px;
   border-radius: 50%;
   background: var(--color-navy);
   color: var(--color-white);
@@ -902,6 +902,7 @@ ul, ol {
   font-weight: 700;
   font-size: 1.15rem;
   margin-bottom: 18px;
+  object-fit: cover;
 }
 
 .doctor-card h3 {
