@@ -415,6 +415,12 @@ const MEDHUB_SCHEMA = {
   telephone: '+380-67-406-73-57',
   email: 'info@medhub.group',
   areaServed: 'UA',
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: 'Голосіївський проспект, 70',
+    addressLocality: 'Київ',
+    addressCountry: 'UA',
+  },
 };
 
 const SHEBA_SCHEMA = {
@@ -995,15 +1001,15 @@ pages.push({
         </div>
         <div class="contact-info-item">
           <h3>Адреса представництва MEDHUB</h3>
-          <p>Україна, Київ (адресу буде уточнено)</p>
+          <p>Голосіївський проспект, 70, офісна будівля готелю «Мир», Київ</p>
         </div>
       </div>
 
-      <!-- TEMP placeholder map: MEDHUB's Ukraine office address is not yet finalized (see contact-info-item above), so this shows Sheba Medical Center's Israel location for reference only. Replace with a map of MEDHUB's actual Ukraine office once that address is confirmed. -->
+      <!-- Approximate pin for Hotel Mir office building, Holosiivskyi Ave 70, Kyiv — verify exact coordinates before relying on this for navigation. -->
       <div class="contact-map">
-        <iframe src="https://www.openstreetmap.org/export/embed.html?bbox=34.8215%2C32.0295%2C34.8635%2C32.0515&amp;layer=mapnik&amp;marker=32.0407%2C34.8425" title="Sheba Medical Center, Ізраїль — довідково" loading="lazy"></iframe>
+        <iframe src="https://www.openstreetmap.org/export/embed.html?bbox=30.4788%2C50.3858%2C30.5208%2C50.4078&amp;layer=mapnik&amp;marker=50.3968%2C30.4998" title="Офіс MEDHUB, Голосіївський проспект 70, Київ" loading="lazy"></iframe>
       </div>
-      <p class="map-caption">Карта показує розташування Sheba Medical Center в Ізраїлі (довідково). Адресу представництва MEDHUB в Україні буде додано окремо.</p>
+      <p class="map-caption">Голосіївський проспект, 70 (офісна будівля готелю «Мир»), Київ.</p>
     </div>
   </section>
 
@@ -1547,15 +1553,15 @@ pages.push({
         </div>
         <div class="contact-info-item">
           <h3>MEDHUB office address</h3>
-          <p>Ukraine, Kyiv (address to be confirmed)</p>
+          <p>70 Holosiivskyi Avenue, Hotel Mir office building, Kyiv, Ukraine</p>
         </div>
       </div>
 
-      <!-- TEMP placeholder map: MEDHUB's Ukraine office address is not yet finalized (see contact-info-item above), so this shows Sheba Medical Center's Israel location for reference only. Replace with a map of MEDHUB's actual Ukraine office once that address is confirmed. -->
+      <!-- Approximate pin for Hotel Mir office building, Holosiivskyi Ave 70, Kyiv — verify exact coordinates before relying on this for navigation. -->
       <div class="contact-map">
-        <iframe src="https://www.openstreetmap.org/export/embed.html?bbox=34.8215%2C32.0295%2C34.8635%2C32.0515&amp;layer=mapnik&amp;marker=32.0407%2C34.8425" title="Sheba Medical Center, Israel — for reference" loading="lazy"></iframe>
+        <iframe src="https://www.openstreetmap.org/export/embed.html?bbox=30.4788%2C50.3858%2C30.5208%2C50.4078&amp;layer=mapnik&amp;marker=50.3968%2C30.4998" title="MEDHUB office, 70 Holosiivskyi Avenue, Kyiv" loading="lazy"></iframe>
       </div>
-      <p class="map-caption">The map shows the location of Sheba Medical Center in Israel (for reference). The address of MEDHUB's office in Ukraine will be added separately.</p>
+      <p class="map-caption">70 Holosiivskyi Avenue (Hotel Mir office building), Kyiv, Ukraine.</p>
     </div>
   </section>
 
