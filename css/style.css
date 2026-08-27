@@ -241,9 +241,36 @@ ul, ol {
 }
 
 .top-bar-cta {
-  margin-left: auto;
   background: var(--color-teal);
   gap: 8px;
+}
+
+.lang-switch {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 0 14px;
+}
+
+.lang-switch a {
+  padding: 4px 8px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  color: rgba(255, 255, 255, 0.6);
+  border-radius: 4px;
+}
+
+.lang-switch a:hover {
+  opacity: 1;
+  color: var(--color-white);
+  text-decoration: none;
+}
+
+.lang-switch a.is-active {
+  color: var(--color-white);
+  background: rgba(255, 255, 255, 0.18);
 }
 
 .header-mid {
@@ -310,40 +337,60 @@ ul, ol {
   color: var(--color-text-muted);
 }
 
-.header-shortcuts {
-  display: flex;
-  align-items: flex-start;
-  gap: 34px;
-}
+/* Co-branded MEDHUB + Sheba Medical Center logo lockup (header + footer) */
 
-.header-shortcut {
+.brand-block {
   display: flex;
   flex-direction: column;
+  gap: 6px;
+}
+
+.brand-lockup {
+  display: flex;
   align-items: center;
-  gap: 8px;
-  color: var(--color-navy);
-  text-align: center;
-  width: 90px;
+  gap: 16px;
 }
 
-.header-shortcut:hover {
-  text-decoration: none;
-  opacity: 0.8;
+.brand-divider {
+  width: 1px;
+  height: 32px;
+  background: var(--color-border);
+  flex-shrink: 0;
 }
 
-.header-shortcut svg {
-  width: 30px;
-  height: 30px;
+.logo--sheba {
+  padding: 0;
 }
 
-.header-shortcut span {
-  font-size: 0.78rem;
+.sheba-logo-img {
+  height: 34px;
+  width: auto;
+  display: block;
+}
+
+.brand-tagline {
+  margin: 0;
+  font-size: 0.68rem;
   font-weight: 600;
-  color: var(--color-navy);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-text-muted);
 }
 
-.header-shortcut--search span {
-  font-weight: 700;
+/* On the dark footer, Sheba's logo (navy wordmark) needs a light chip
+   behind it to stay legible — the file itself is untouched/uncolored. */
+.footer-top .brand-divider {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+.footer-top .brand-tagline {
+  color: rgba(255, 255, 255, 0.65);
+}
+
+.footer-top .logo--sheba {
+  background: var(--color-white);
+  padding: 8px 14px;
+  border-radius: var(--radius-sm);
 }
 
 .main-nav {
@@ -545,6 +592,12 @@ ul, ol {
 }
 
 /* Full-width support text */
+
+.sheba-logo-block {
+  height: 40px;
+  width: auto;
+  margin-bottom: 20px;
+}
 
 .support-section h2 {
   max-width: 70ch;
@@ -1169,6 +1222,27 @@ ul, ol {
     position: relative;
   }
 
+  .brand-lockup {
+    gap: 10px;
+  }
+
+  .logo-mark {
+    width: 34px;
+    height: 34px;
+  }
+
+  .logo-name {
+    font-size: 1.1rem;
+  }
+
+  .sheba-logo-img {
+    height: 26px;
+  }
+
+  .brand-divider {
+    height: 26px;
+  }
+
   .nav-toggle {
     display: flex;
     position: absolute;
@@ -1221,6 +1295,27 @@ ul, ol {
 
   .main-nav-mobile li.is-current a {
     color: var(--color-pink);
+  }
+
+  .lang-switch--mobile {
+    justify-content: center;
+    margin: 4px 0 20px;
+    padding: 0;
+    gap: 6px;
+  }
+
+  .lang-switch--mobile a {
+    display: inline-block;
+    padding: 6px 16px !important;
+    color: var(--color-text-muted);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-pill);
+  }
+
+  .lang-switch--mobile a.is-active {
+    color: var(--color-white);
+    background: var(--medhub-blue);
+    border-color: var(--medhub-blue);
   }
 
   h1 {

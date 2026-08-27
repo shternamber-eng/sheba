@@ -1,6 +1,11 @@
 (function () {
   'use strict';
 
+  var isEn = document.documentElement.lang === 'en';
+  var i18n = isEn
+    ? { openMenu: 'Open menu', closeMenu: 'Close menu', noFile: 'No file chosen', filesSelected: ' files selected' }
+    : { openMenu: 'Відкрити меню', closeMenu: 'Закрити меню', noFile: 'Файл не обрано', filesSelected: ' файлів обрано' };
+
   // Mobile navigation toggle
   var navToggle = document.getElementById('nav-toggle');
   var mainNav = document.getElementById('main-nav-mobile');
@@ -9,14 +14,14 @@
     navToggle.addEventListener('click', function () {
       var isOpen = mainNav.classList.toggle('is-open');
       navToggle.setAttribute('aria-expanded', String(isOpen));
-      navToggle.setAttribute('aria-label', isOpen ? 'Закрити меню' : 'Відкрити меню');
+      navToggle.setAttribute('aria-label', isOpen ? i18n.closeMenu : i18n.openMenu);
     });
 
     mainNav.querySelectorAll('a').forEach(function (link) {
       link.addEventListener('click', function () {
         mainNav.classList.remove('is-open');
         navToggle.setAttribute('aria-expanded', 'false');
-        navToggle.setAttribute('aria-label', 'Відкрити меню');
+        navToggle.setAttribute('aria-label', i18n.openMenu);
       });
     });
   }
@@ -29,11 +34,11 @@
     documentsInput.addEventListener('change', function () {
       var count = documentsInput.files ? documentsInput.files.length : 0;
       if (count === 0) {
-        fileHint.textContent = 'Файл не обрано';
+        fileHint.textContent = i18n.noFile;
       } else if (count === 1) {
         fileHint.textContent = documentsInput.files[0].name;
       } else {
-        fileHint.textContent = count + ' файлів обрано';
+        fileHint.textContent = count + i18n.filesSelected;
       }
     });
   }
