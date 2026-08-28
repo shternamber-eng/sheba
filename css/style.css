@@ -1114,6 +1114,37 @@ ul, ol {
   margin: 0;
 }
 
+/* "Хто за що відповідає" split — MEDHUB (Ukraine) vs Sheba (Israel) */
+
+.responsibility-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 28px;
+}
+
+.responsibility-item {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 28px 26px;
+}
+
+.responsibility-item h3 {
+  color: var(--color-navy);
+  margin-bottom: 14px;
+}
+
+.responsibility-item ul {
+  padding-left: 18px;
+}
+
+.responsibility-item li {
+  margin-bottom: 8px;
+}
+
+.responsibility-item li:last-child {
+  margin-bottom: 0;
+}
+
 /* Contacts page */
 
 .contact-info-grid {
@@ -1950,7 +1981,8 @@ ul, ol {
 
   .directions-grid,
   .doctor-grid,
-  .contact-info-grid {
+  .contact-info-grid,
+  .responsibility-grid {
     grid-template-columns: 1fr;
   }
 
