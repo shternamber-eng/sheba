@@ -97,8 +97,7 @@
       <a href="/napriamy-likuvannia/">Напрями лікування</a>
       <a href="/kontakty/">Контакти</a>
       <div class="lang-switch">
-        <a href="/" class="is-active" aria-current="true">UA</a>
-        <a href="/en/">EN</a>
+        <span class="is-active" aria-current="true">UA</span>
       </div>
       <a href="/kontakty/" class="top-bar-cta">Отримати консультацію
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9 6l6 6-6 6" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -146,10 +145,18 @@
         <li><a href="/">Головна</a></li>
         <li><a href="/pro-medhub/">Про MEDHUB</a></li>
         <li><a href="/sheba-medical-center/">Sheba Medical Center</a></li>
-        <li><a href="/sheba-ukraine/">Sheba в Україні</a></li>
-        <li><a href="/napriamy-likuvannia/">Напрями лікування</a></li>
+        <li class="nav-dropdown is-current">
+          <button type="button" class="nav-dropdown-toggle" aria-haspopup="true" aria-expanded="false">Лікування
+            <svg class="nav-dropdown-caret" width="10" height="6" viewBox="0 0 10 6" fill="none" aria-hidden="true"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <ul class="nav-dropdown-menu">
+            <li><a href="/napriamy-likuvannia/">Напрями лікування</a></li>
+            <li><a href="/diagnostyka/">Діагностика</a></li>
+            <li class="is-current"><a href="/likuvannia-v-izraili/" aria-current="page">Лікування в Ізраїлі</a></li>
+          </ul>
+        </li>
         <li><a href="/likari/">Лікарі</a></li>
-        <li><a href="/patsiientam/">Пацієнтам</a></li>
+        <li><a href="/sheba-ukraine/">Sheba в Україні</a></li>
         <li><a href="/kontakty/">Контакти</a></li>
       </ul>
     </div>
@@ -160,15 +167,20 @@
         <li><a href="/">Головна</a></li>
         <li><a href="/pro-medhub/">Про MEDHUB</a></li>
         <li><a href="/sheba-medical-center/">Sheba Medical Center</a></li>
-        <li><a href="/sheba-ukraine/">Sheba в Україні</a></li>
-        <li><a href="/napriamy-likuvannia/">Напрями лікування</a></li>
+        <li class="nav-group is-current">
+          <span class="nav-group-label">Лікування</span>
+          <ul class="nav-group-children">
+            <li><a href="/napriamy-likuvannia/">Напрями лікування</a></li>
+            <li><a href="/diagnostyka/">Діагностика</a></li>
+            <li class="is-current"><a href="/likuvannia-v-izraili/" aria-current="page">Лікування в Ізраїлі</a></li>
+          </ul>
+        </li>
         <li><a href="/likari/">Лікарі</a></li>
-        <li><a href="/patsiientam/">Пацієнтам</a></li>
+        <li><a href="/sheba-ukraine/">Sheba в Україні</a></li>
         <li><a href="/kontakty/">Контакти</a></li>
     </ul>
     <div class="lang-switch lang-switch--mobile">
-      <a href="/" class="is-active" aria-current="true">UA</a>
-      <a href="/en/">EN</a>
+      <span class="is-active" aria-current="true">UA</span>
     </div>
   </nav>
 </header>

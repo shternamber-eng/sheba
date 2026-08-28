@@ -42,14 +42,24 @@ const MEDHUB_MARK_SVG = `<svg class="logo-mark" viewBox="0 0 81 81" fill="none" 
 // Nav model — single place that defines the site's pages & URLs.
 // ---------------------------------------------------------------------
 
+// A plain item has {slug, href, label}. A dropdown group has {slug, label,
+// children:[...]} — it renders as a button+submenu on desktop and as a
+// labeled sub-list on mobile; it never links anywhere itself.
 const NAV = [
   { slug: 'home', href: '/', label: 'Головна' },
   { slug: 'pro-medhub', href: '/pro-medhub/', label: 'Про MEDHUB' },
   { slug: 'sheba-medical-center', href: '/sheba-medical-center/', label: 'Sheba Medical Center' },
-  { slug: 'sheba-ukraine', href: '/sheba-ukraine/', label: 'Sheba в Україні' },
-  { slug: 'napriamy-likuvannia', href: '/napriamy-likuvannia/', label: 'Напрями лікування' },
+  {
+    slug: 'likuvannia',
+    label: 'Лікування',
+    children: [
+      { slug: 'napriamy-likuvannia', href: '/napriamy-likuvannia/', label: 'Напрями лікування' },
+      { slug: 'diagnostyka', href: '/diagnostyka/', label: 'Діагностика' },
+      { slug: 'likuvannia-v-izraili', href: '/likuvannia-v-izraili/', label: 'Лікування в Ізраїлі' },
+    ],
+  },
   { slug: 'likari', href: '/likari/', label: 'Лікарі' },
-  { slug: 'patsiientam', href: '/patsiientam/', label: 'Пацієнтам' },
+  { slug: 'sheba-ukraine', href: '/sheba-ukraine/', label: 'Sheba в Україні' },
   { slug: 'kontakty', href: '/kontakty/', label: 'Контакти' },
 ];
 
@@ -75,21 +85,56 @@ const PAGE_FAMILIES = {
   kontakty: { uk: '/kontakty/', en: '/en/contacts/' },
 };
 
-function navList(activeSlug, lang) {
-  const nav = lang === 'en' ? NAV_EN : NAV;
-  return nav.map((item) => {
+function navItemHtml(item, activeSlug, mobile) {
+  if (!item.children) {
     const current = item.slug === activeSlug;
     return `        <li${current ? ' class="is-current"' : ''}><a href="${item.href}"${current ? ' aria-current="page"' : ''}>${item.label}</a></li>`;
+  }
+  const childActive = item.children.some((c) => c.slug === activeSlug);
+  const children = item.children.map((c) => {
+    const current = c.slug === activeSlug;
+    return `            <li${current ? ' class="is-current"' : ''}><a href="${c.href}"${current ? ' aria-current="page"' : ''}>${c.label}</a></li>`;
   }).join('\n');
+  if (mobile) {
+    return `        <li class="nav-group${childActive ? ' is-current' : ''}">
+          <span class="nav-group-label">${item.label}</span>
+          <ul class="nav-group-children">
+${children}
+          </ul>
+        </li>`;
+  }
+  return `        <li class="nav-dropdown${childActive ? ' is-current' : ''}">
+          <button type="button" class="nav-dropdown-toggle" aria-haspopup="true" aria-expanded="false">${item.label}
+            <svg class="nav-dropdown-caret" width="10" height="6" viewBox="0 0 10 6" fill="none" aria-hidden="true"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <ul class="nav-dropdown-menu">
+${children}
+          </ul>
+        </li>`;
 }
 
-function langSwitcher(activeSlug, lang) {
-  const family = PAGE_FAMILIES[activeSlug];
-  const ukHref = family ? family.uk : '/';
-  const enHref = family ? family.en : '/en/';
+function navList(activeSlug, lang, mobile) {
+  const nav = lang === 'en' ? NAV_EN : NAV;
+  return nav.map((item) => navItemHtml(item, activeSlug, mobile)).join('\n');
+}
+
+// familySlug identifies the page for language-switcher purposes and may
+// differ from activeSlug (used only for nav highlighting) — e.g. a
+// /napriamy-likuvannia/<direction>/ stub highlights the "Лікування" nav
+// group but has no EN counterpart of its own, so it must not show an EN
+// link at all (see langSwitcher below).
+function langSwitcher(familySlug, lang) {
+  const family = PAGE_FAMILIES[familySlug];
+  if (!family) {
+    // No EN counterpart for this specific page — show the current
+    // language only, never a link to an unrelated/nonexistent translation.
+    return `<div class="lang-switch">
+        <span class="is-active" aria-current="true">${lang === 'en' ? 'EN' : 'UA'}</span>
+      </div>`;
+  }
   return `<div class="lang-switch">
-        <a href="${ukHref}"${lang === 'uk' ? ' class="is-active" aria-current="true"' : ''}>UA</a>
-        <a href="${enHref}"${lang === 'en' ? ' class="is-active" aria-current="true"' : ''}>EN</a>
+        <a href="${family.uk}"${lang === 'uk' ? ' class="is-active" aria-current="true"' : ''}>UA</a>
+        <a href="${family.en}"${lang === 'en' ? ' class="is-active" aria-current="true"' : ''}>EN</a>
       </div>`;
 }
 
@@ -98,7 +143,7 @@ function langSwitcher(activeSlug, lang) {
 // the one place to edit chrome shared by every page).
 // ---------------------------------------------------------------------
 
-function renderHeader(activeSlug, lang = 'uk') {
+function renderHeader(activeSlug, lang = 'uk', familySlug = activeSlug) {
   const en = lang === 'en';
   const home = en ? '/en/' : '/';
   const directions = en ? '/en/treatment-directions/' : '/napriamy-likuvannia/';
@@ -125,7 +170,7 @@ function renderHeader(activeSlug, lang = 'uk') {
       <a href="${doctors}">${t.findDoctor}</a>
       <a href="${directions}">${t.directionsLabel}</a>
       <a href="${contacts}">${t.contactsLabel}</a>
-      ${langSwitcher(activeSlug, lang)}
+      ${langSwitcher(familySlug, lang)}
       <a href="${contacts}" class="top-bar-cta">${t.getConsult}
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9 6l6 6-6 6" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </a>
@@ -161,18 +206,24 @@ function renderHeader(activeSlug, lang = 'uk') {
   <nav class="main-nav" id="main-nav" aria-label="${t.mainNav}">
     <div class="container">
       <ul>
-${navList(activeSlug, lang)}
+${navList(activeSlug, lang, false)}
       </ul>
     </div>
   </nav>
 
   <nav class="main-nav-mobile" id="main-nav-mobile" aria-label="${t.mobileNav}">
     <ul>
-${navList(activeSlug, lang)}
+${navList(activeSlug, lang, true)}
     </ul>
     <div class="lang-switch lang-switch--mobile">
-      <a href="${PAGE_FAMILIES[activeSlug] ? PAGE_FAMILIES[activeSlug].uk : '/'}"${lang === 'uk' ? ' class="is-active" aria-current="true"' : ''}>UA</a>
-      <a href="${PAGE_FAMILIES[activeSlug] ? PAGE_FAMILIES[activeSlug].en : '/en/'}"${lang === 'en' ? ' class="is-active" aria-current="true"' : ''}>EN</a>
+${(() => {
+      const family = PAGE_FAMILIES[familySlug];
+      if (!family) {
+        return `      <span class="is-active" aria-current="true">${en ? 'EN' : 'UA'}</span>`;
+      }
+      return `      <a href="${family.uk}"${lang === 'uk' ? ' class="is-active" aria-current="true"' : ''}>UA</a>
+      <a href="${family.en}"${lang === 'en' ? ' class="is-active" aria-current="true"' : ''}>EN</a>`;
+    })()}
     </div>
   </nav>
 </header>`;
@@ -391,7 +442,7 @@ ${(Array.isArray(schema) ? schema : [schema]).map((s) => `<script type="applicat
 <body>
 <a class="skip-link" href="#main-content">${en ? 'Skip to main content' : 'Перейти до основного вмісту'}</a>
 
-${renderHeader(navSlug || slug, lang)}
+${renderHeader(navSlug || slug, lang, slug)}
 
 <main id="main-content">
 ${mainHtml}
@@ -825,7 +876,7 @@ pages.push({
       <div class="support-body">
         <p>Зв'язок Sheba Medical Center з Україною почався не з відкриття цього сайту. Ще у 2022 році центр розгорнув польовий госпіталь Kochav Meir у Мостиськах, а згодом — мобільну клініку жіночого здоров'я та постійний діагностичний центр у Києві.</p>
       </div>
-      <a href="/sheba-ukraine-dopomoha/" class="text-link">Дізнатися більше про допомогу Sheba Україні з 2022 року →</a>
+      <a href="/sheba-dopomoha-ukraini/" class="text-link">Дізнатися більше про допомогу Sheba Україні з 2022 року →</a>
     </div>
   </section>
 
@@ -846,7 +897,7 @@ ${ctaBand({
 
 // ===== SHEBA В УКРАЇНІ (representation / how to reach Sheba from Ukraine) =
 // Distinct search intent from /pro-medhub/ (about MEDHUB as a company) and
-// from /sheba-ukraine-dopomoha/ (2022– humanitarian aid history) — this
+// from /sheba-dopomoha-ukraini/ (2022– humanitarian aid history) — this
 // page answers "how does a Ukrainian patient reach Sheba / who represents
 // Sheba in Ukraine." Do not merge this content into either of those pages.
 const BC_SHEBA_UA = crumbs([['Головна', '/'], ['Sheba в Україні', '/sheba-ukraine/']]);
@@ -900,7 +951,7 @@ pages.push({
       <div class="support-body">
         <p><a href="/sheba-medical-center/" class="text-link">Про сам Sheba Medical Center →</a></p>
         <p><a href="/likuvannia-v-izraili/" class="text-link">Як організовано лікування в Ізраїлі →</a></p>
-        <p><a href="/sheba-ukraine-dopomoha/" class="text-link">Допомога Sheba Medical Center Україні з 2022 року →</a></p>
+        <p><a href="/sheba-dopomoha-ukraini/" class="text-link">Допомога Sheba Medical Center Україні з 2022 року →</a></p>
       </div>
     </div>
   </section>
@@ -924,6 +975,7 @@ ${ctaBand({
 const DIRECTIONS = [
   ['Онкологія', 'Діагностика та лікування онкологічних захворювань у дорослих і дітей, включно з хіміотерапією, променевою терапією та таргетною терапією.', 'onkologiya'],
   ['Онкогематологія', 'Діагностика та лікування онкологічних захворювань крові та кровотворної системи — лейкемії, лімфоми та мієломи.', 'onkohematologiya'],
+  ['Гематологія', 'Діагностика та лікування незлоякісних захворювань крові та системи згортання — анемій, порушень згортання та інших гематологічних станів.', 'hematologiya'],
   ['Кардіологія', 'Діагностика та лікування захворювань серця і судин, включно з інвазивною кардіологією та кардіохірургією.', 'kardiologiya'],
   ['Нейрохірургія', 'Хірургічне лікування захворювань і травм головного та спинного мозку.', 'neirohirurgiya'],
   ['Неврологія', 'Діагностика та лікування захворювань головного і спинного мозку, периферичної нервової системи.', 'nevrologiya'],
@@ -934,6 +986,7 @@ const DIRECTIONS = [
   ['Педіатрія', 'Діагностика та лікування дитячих захворювань, включно з дитячою онкологією та хірургією.', 'pediatriya'],
   ['Реабілітація', 'Реабілітаційні програми після інсульту, травм і хірургічних втручань.', 'reabilitatsiya'],
   ['Трансплантологія', 'Програми трансплантації органів і кісткового мозку.', 'transplantologiya'],
+  ['Генетика', 'Генетична діагностика, консультування та супровід пацієнтів зі спадковими захворюваннями.', 'genetyka'],
 ];
 
 const BC_NAPRIAMY = crumbs([['Головна', '/'], ['Напрями лікування', '/napriamy-likuvannia/']]);
@@ -1942,13 +1995,17 @@ ${renderConsultationForm('en')}
 // pulled from Sheba's and Kvitna's own official sites — see credits under
 // each image. Where no rights-cleared photo could be sourced, a labeled
 // placeholder with a PHOTO RIGHTS TO BE CONFIRMED comment stands in.
+// Renamed from /sheba-ukraine-dopomoha/ to /sheba-dopomoha-ukraini/ to keep
+// this humanitarian-history intent (Stage 1.1) clearly apart from the
+// commercial "representative in Ukraine" intent now owned by /sheba-ukraine/
+// — see _redirects for the 301 covering the old URL.
 const SHEBA_UKRAINE_SCHEMA = {
   '@context': 'https://schema.org',
   '@type': 'Article',
-  headline: 'Sheba Medical Center та Україна: допомога, що почалася у перші тижні війни',
+  headline: 'Sheba Medical Center та Україна: допомога з перших тижнів війни',
   description: 'Від польового госпіталю Kochav Meir та телемедицини до мобільної клініки жіночого здоров\'я, навчання українських лікарів і діагностичного центру в Києві.',
   inLanguage: 'uk',
-  url: `${SITE_URL}/sheba-ukraine-dopomoha/`,
+  url: `${SITE_URL}/sheba-dopomoha-ukraini/`,
   publisher: { '@type': 'Organization', name: 'MEDHUB', url: SITE_URL },
   about: { '@type': 'MedicalOrganization', name: SHEBA_NAME },
 };
@@ -1956,15 +2013,15 @@ const SHEBA_UKRAINE_SCHEMA = {
 const BC_DOPOMOHA = crumbs([
   ['Головна', '/'],
   ['Sheba Medical Center', '/sheba-medical-center/'],
-  ['Допомога Україні з 2022 року', '/sheba-ukraine-dopomoha/'],
+  ['Допомога Україні з 2022 року', '/sheba-dopomoha-ukraini/'],
 ]);
 
 pages.push({
-  slug: 'sheba-ukraine-dopomoha',
-  outPath: 'sheba-ukraine-dopomoha/index.html',
-  title: 'Sheba Medical Center та Україна: медична допомога з 2022 року | MEDHUB',
+  slug: 'sheba-dopomoha-ukraini',
+  outPath: 'sheba-dopomoha-ukraini/index.html',
+  title: 'Sheba Medical Center та допомога Україні з 2022 року | MEDHUB',
   description: 'Від польового госпіталю Kochav Meir та телемедицини до мобільної клініки жіночого здоров\'я, навчання українських лікарів і діагностичного центру в Києві. Історія допомоги Sheba Medical Center Україні з 2022 року.',
-  canonicalPath: '/sheba-ukraine-dopomoha/',
+  canonicalPath: '/sheba-dopomoha-ukraini/',
   schema: [SHEBA_UKRAINE_SCHEMA, BC_DOPOMOHA.schema, MEDHUB_SCHEMA, SHEBA_SCHEMA],
   mainHtml: `${BC_DOPOMOHA.html}  <section class="history-hero">
     <div class="history-hero-media">
@@ -1974,7 +2031,7 @@ pages.push({
     <div class="history-hero-content">
       <div class="container">
         <p class="eyebrow">SHEBA MEDICAL CENTER × UKRAINE</p>
-        <h1>Sheba Medical Center та Україна: допомога, що почалася у перші тижні війни</h1>
+        <h1>Sheba Medical Center та Україна: допомога з перших тижнів війни</h1>
         <p>З перших тижнів повномасштабного вторгнення Sheba Medical Center долучився до допомоги Україні — через телемедицину, польовий госпіталь, лікування пацієнтів, підготовку українських медиків та створення довгострокових медичних програм.</p>
         <ul class="timeline-nav">
           <li><a href="#y2022">2022</a></li>

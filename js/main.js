@@ -26,6 +26,52 @@
     });
   }
 
+  // Desktop "Лікування" nav dropdown — mouse hover and click/keyboard both
+  // open it, both kept in sync with aria-expanded for screen readers.
+  // (Mobile uses a separate, always-expanded ".nav-group" list — no JS needed there.)
+  document.querySelectorAll('.nav-dropdown').forEach(function (dropdown) {
+    var toggle = dropdown.querySelector('.nav-dropdown-toggle');
+    var menu = dropdown.querySelector('.nav-dropdown-menu');
+    if (!toggle || !menu) return;
+
+    function open() {
+      dropdown.classList.add('is-open');
+      toggle.setAttribute('aria-expanded', 'true');
+    }
+    function close() {
+      dropdown.classList.remove('is-open');
+      toggle.setAttribute('aria-expanded', 'false');
+    }
+
+    dropdown.addEventListener('mouseenter', open);
+    dropdown.addEventListener('mouseleave', close);
+
+    toggle.addEventListener('click', function () {
+      if (dropdown.classList.contains('is-open')) {
+        close();
+      } else {
+        open();
+      }
+    });
+
+    dropdown.addEventListener('keydown', function (event) {
+      if (event.key === 'Escape') {
+        close();
+        toggle.focus();
+      }
+    });
+
+    document.addEventListener('click', function (event) {
+      if (!dropdown.contains(event.target)) {
+        close();
+      }
+    });
+
+    menu.querySelectorAll('a').forEach(function (link) {
+      link.addEventListener('click', close);
+    });
+  });
+
   // File input hint
   var documentsInput = document.getElementById('documents');
   var fileHint = document.getElementById('file-hint');

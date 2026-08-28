@@ -1,0 +1,9 @@
+# 301s for renamed/removed URLs. Read by Cloudflare's static-asset router
+# (Workers Static Assets and Pages both honor this file) before it falls
+# back to serving a matching file or the 404 page — keep in sync with
+# build.js whenever a canonicalPath changes.
+
+# Stage 1.1: split the "Sheba + Ukraine" intent in two — the commercial
+# representative page now owns /sheba-ukraine/; this humanitarian-history
+# article moved so the two stop competing for the same query.
+/sheba-ukraine-dopomoha/ /sheba-dopomoha-ukraini/ 301

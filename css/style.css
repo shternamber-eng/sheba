@@ -435,6 +435,104 @@ ul, ol {
   background: var(--medhub-yellow);
 }
 
+/* "Лікування" dropdown — desktop only (.main-nav is hidden ≤1024px, where
+   the mobile ".nav-group" version below takes over instead). */
+
+.nav-dropdown {
+  position: relative;
+}
+
+.nav-dropdown-toggle {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  position: relative;
+  padding: 15px 18px;
+  background: none;
+  border: none;
+  font-family: inherit;
+  font-size: 0.98rem;
+  font-weight: 600;
+  color: var(--color-navy);
+  cursor: pointer;
+}
+
+.nav-dropdown-toggle:hover {
+  opacity: 0.75;
+}
+
+.nav-dropdown-toggle:focus-visible {
+  outline: 2px solid var(--color-navy);
+  outline-offset: -2px;
+}
+
+.nav-dropdown-caret {
+  transition: transform 0.15s ease;
+}
+
+.nav-dropdown.is-open .nav-dropdown-caret {
+  transform: rotate(180deg);
+}
+
+.nav-dropdown.is-current .nav-dropdown-toggle::after {
+  content: '';
+  position: absolute;
+  left: 18px;
+  right: 18px;
+  bottom: 6px;
+  height: 3px;
+  background: var(--medhub-yellow);
+}
+
+.nav-dropdown-menu {
+  list-style: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  min-width: 250px;
+  background: var(--color-white);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+  padding: 6px;
+  margin: 0;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(4px);
+  transition: opacity 0.15s ease, transform 0.15s ease, visibility 0.15s;
+  z-index: 50;
+}
+
+.nav-dropdown.is-open .nav-dropdown-menu {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.nav-dropdown-menu li + li {
+  margin-top: 2px;
+}
+
+.nav-dropdown-menu a {
+  display: block;
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+  color: var(--color-navy);
+  font-size: 0.94rem;
+  font-weight: 600;
+}
+
+.nav-dropdown-menu a:hover,
+.nav-dropdown-menu a:focus-visible {
+  background: var(--color-bg-alt);
+  opacity: 1;
+  outline: none;
+}
+
+.nav-dropdown-menu li.is-current a {
+  color: var(--color-pink);
+}
+
 .header-actions {
   display: none;
   align-items: center;
@@ -1675,12 +1773,15 @@ ul, ol {
     border-top: 1px solid var(--color-border);
     border-bottom: 1px solid var(--color-border);
     max-height: 0;
-    overflow: hidden;
+    overflow-y: auto;
     transition: max-height 0.2s ease;
   }
 
   .main-nav-mobile.is-open {
-    max-height: 480px;
+    /* Enough for every top-level item plus the "Лікування" group's 3
+       children; capped to the viewport so short screens still scroll
+       instead of clipping the last items. */
+    max-height: min(640px, 80vh);
   }
 
   .main-nav-mobile ul {
@@ -1701,6 +1802,28 @@ ul, ol {
 
   .main-nav-mobile li.is-current a {
     color: var(--color-pink);
+  }
+
+  .nav-group-label {
+    display: block;
+    padding: 14px 0 4px;
+    color: var(--color-text-muted);
+    font-weight: 600;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+  }
+
+  .nav-group-children {
+    list-style: none;
+  }
+
+  .nav-group-children li {
+    border-bottom: none;
+  }
+
+  .nav-group-children a {
+    padding: 10px 0 10px 14px;
   }
 
   .lang-switch--mobile {
