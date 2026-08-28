@@ -902,32 +902,185 @@ ${ctaBand({
 // page answers "how does a Ukrainian patient reach Sheba / who represents
 // Sheba in Ukraine." Do not merge this content into either of those pages.
 const BC_SHEBA_UA = crumbs([['Головна', '/'], ['Sheba в Україні', '/sheba-ukraine/']]);
+const SHEBA_UA_FAQ = [
+  ['Скільки часу займає відповідь від Sheba?', 'Орієнтовні строки розгляду звернення повідомляє координатор MEDHUB одразу після передачі документів — вони залежать від складності випадку та завантаженості профільного підрозділу Sheba Medical Center.'],
+  ['Чи потрібно відразу їхати до Ізраїлю?', 'Ні. Спочатку медичні документи розглядають фахівці Sheba Medical Center — приїзд до Ізраїлю планується лише після попередньої медичної оцінки та узгодження програми візиту.'],
+  ['Чи можна звернутися самостійно, без направлення лікаря?', 'Так. Направлення від лікаря не є обов\'язковим — достатньо надіслати наявні медичні документи координатору MEDHUB, і він визначить подальші кроки.'],
+];
+const SHEBA_UA_FAQ_SCHEMA = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: SHEBA_UA_FAQ.map(([q, a]) => ({
+    '@type': 'Question',
+    name: q,
+    acceptedAnswer: { '@type': 'Answer', text: a },
+  })),
+};
 pages.push({
   slug: 'sheba-ukraine',
   outPath: 'sheba-ukraine/index.html',
   title: 'Представник Sheba Medical Center в Україні | MEDHUB',
   description: 'MEDHUB — офіційний представник Sheba Medical Center в Україні. Як звернутися до Sheba Medical Center з України та зв\'язатися з координатором MEDHUB.',
   canonicalPath: '/sheba-ukraine/',
-  schema: [MEDHUB_SCHEMA, SHEBA_SCHEMA, BC_SHEBA_UA.schema],
+  schema: [MEDHUB_SCHEMA, SHEBA_SCHEMA, BC_SHEBA_UA.schema, SHEBA_UA_FAQ_SCHEMA],
   mainHtml: `${BC_SHEBA_UA.html}${titleBand('Представник Sheba Medical Center в Україні')}
 
-  <section class="section page-intro">
-    <div class="container">
-      <p>MEDHUB є авторизованим представником Sheba Medical Center в Україні. Це означає, що українські пацієнти звертаються до Sheba Medical Center не напряму, а через офіс MEDHUB у Києві — українською або російською мовою, без потреби самостійно шукати контакти в Ізраїлі чи долати мовний бар'єр.</p>
+  <section class="hero">
+    <div class="container hero-inner">
+      <div class="hero-text">
+        <p class="eyebrow">MEDHUB × SHEBA MEDICAL CENTER</p>
+        <p>MEDHUB — авторизований представник Sheba Medical Center в Україні. Українські пацієнти звертаються до Sheba Medical Center не напряму, а через офіс MEDHUB у Києві — українською або російською мовою, без потреби самостійно шукати контакти в Ізраїлі чи долати мовний бар'єр.</p>
+        <div class="hero-actions">
+          <a href="#contact-form" class="btn btn-pink">Надіслати документи
+            <span class="btn-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          </a>
+          <a href="#yak-zvernutysia" class="btn btn-outline">Як звернутися</a>
+        </div>
+      </div>
+      <div class="hero-media">
+        <div class="cobrand-card">
+          <div class="brand-lockup">
+            ${MEDHUB_MARK_SVG}
+            <span class="logo-name">MEDHUB</span>
+            <span class="brand-divider" aria-hidden="true"></span>
+            <img src="/assets/brand/sheba-medical-center-logo.svg" alt="Sheba Medical Center" class="sheba-logo-img">
+          </div>
+          <p class="brand-tagline">Авторизований представник Sheba Medical Center в Україні</p>
+        </div>
+      </div>
     </div>
   </section>
 
   <section class="section support-section section-alt">
     <div class="container">
-      <h2><strong>Що робить</strong> представництво в Україні</h2>
+      <h2>Хто за що відповідає</h2>
+      <div class="responsibility-grid">
+        <div class="responsibility-item">
+          <h3>MEDHUB координує</h3>
+          <ul>
+            <li>приймає звернення та медичні документи;</li>
+            <li>передає їх профільному підрозділу Sheba Medical Center;</li>
+            <li>підтримує зв'язок із пацієнтом українською або російською мовою;</li>
+            <li>допомагає організувати візит до Ізраїлю.</li>
+          </ul>
+        </div>
+        <div class="responsibility-item">
+          <h3>Sheba Medical Center лікує</h3>
+          <ul>
+            <li>проводить медичну оцінку документів;</li>
+            <li>ухвалює медичні рішення;</li>
+            <li>визначає програму діагностики й лікування;</li>
+            <li>надає всі медичні послуги в Ізраїлі.</li>
+          </ul>
+        </div>
+      </div>
+      <p class="info-note">MEDHUB не є медичним закладом і не ухвалює медичних рішень. Діагностику та лікування здійснює виключно Sheba Medical Center.</p>
+    </div>
+  </section>
+
+  <section class="section section--tight" id="yak-zvernutysia">
+    <div class="container">
+      <h2>Як звернутися до Sheba з України</h2>
+      <ol class="steps-list">
+        <li><span class="steps-number">1</span><div><h3>Зв'яжіться з MEDHUB</h3><p>Телефоном, через WhatsApp або формою на цій сторінці.</p></div></li>
+        <li><span class="steps-number">2</span><div><h3>Надішліть медичні документи</h3><p>Виписки, результати досліджень і знімки — у зручному форматі.</p></div></li>
+        <li><span class="steps-number">3</span><div><h3>Sheba оцінює звернення</h3><p>Профільний підрозділ Sheba Medical Center розглядає документи.</p></div></li>
+        <li><span class="steps-number">4</span><div><h3>MEDHUB повідомляє наступні кроки</h3><p>Консультація, додаткові дослідження або організація візиту в Ізраїль.</p></div></li>
+      </ol>
+      <p><a href="/suprovid-patsiientiv/" class="text-link">Детальніше про весь шлях пацієнта →</a></p>
+    </div>
+  </section>
+
+  <section class="section support-section section-alt">
+    <div class="container">
+      <h2>Які медичні документи можна надіслати</h2>
       <div class="support-body">
-        <p>MEDHUB приймає звернення та медичні документи від українського пацієнта, передає їх профільному підрозділу Sheba Medical Center і координує відповідь — від первинної медичної оцінки до організації візиту в Ізраїль. Медичні рішення ухвалює виключно Sheba Medical Center.</p>
+        <p>
+          <span>виписки з історії хвороби;</span>
+          <span>результати лабораторних досліджень;</span>
+          <span>знімки МРТ, КТ або PET-CT;</span>
+          <span>гістологічні висновки;</span>
+          <span>попередні висновки лікарів.</span>
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section support-section">
+    <div class="container">
+      <h2>Основні напрями лікування</h2>
+      <div class="support-body">
+        <p>
+          <span><a href="/napriamy-likuvannia/onkologiya/" class="text-link">Онкологія</a></span>
+          <span><a href="/napriamy-likuvannia/onkohematologiya/" class="text-link">Онкогематологія</a></span>
+          <span><a href="/napriamy-likuvannia/kardiologiya/" class="text-link">Кардіологія</a></span>
+          <span><a href="/napriamy-likuvannia/nevrologiya/" class="text-link">Неврологія</a></span>
+          <span><a href="/napriamy-likuvannia/ortopediya/" class="text-link">Ортопедія</a></span>
+          <span><a href="/napriamy-likuvannia/ginekologiya/" class="text-link">Гінекологія</a></span>
+          <span><a href="/napriamy-likuvannia/pediatriya/" class="text-link">Педіатрія</a></span>
+          <span><a href="/napriamy-likuvannia/reabilitatsiya/" class="text-link">Реабілітація</a></span>
+        </p>
+      </div>
+      <p><a href="/napriamy-likuvannia/" class="text-link">Усі напрями лікування →</a></p>
+      <p><a href="/likuvannia-v-izraili/" class="text-link">Як організовано лікування в Ізраїлі →</a></p>
+    </div>
+  </section>
+
+  <section class="section support-section section-alt">
+    <div class="container">
+      <img src="/assets/brand/sheba-medical-center-logo.svg" alt="Sheba Medical Center" class="sheba-logo-block">
+      <h2>Sheba Medical Center</h2>
+      <div class="support-body">
+        <p>Sheba Medical Center — один із провідних багатопрофільних медичних центрів Ізраїлю, розташований у Рамат-Гані поблизу Тель-Авіва.</p>
+      </div>
+      <a href="/sheba-medical-center/" class="text-link">Про сам Sheba Medical Center →</a>
+    </div>
+  </section>
+
+  <section class="section support-section">
+    <div class="container">
+      <h2>Sheba та Україна</h2>
+      <div class="support-body">
+        <p>Співпраця Sheba Medical Center з Україною почалася задовго до цього сайту — з польового госпіталю Kochav Meir у 2022 році. Особливу роль у розвитку цієї співпраці відіграє Yoel Har-Even, Vice President of Global Affairs Sheba Medical Center.</p>
+      </div>
+      <a href="/sheba-dopomoha-ukraini/" class="text-link">Історія допомоги Sheba Україні з 2022 року →</a>
+    </div>
+  </section>
+
+  <section class="section support-section section-alt">
+    <div class="container">
+      <h2>Супровід пацієнта</h2>
+      <div class="support-body">
+        <p>MEDHUB залишається поруч не лише на етапі першого звернення, а й під час лікування та після повернення в Україну — координує комунікацію з Sheba на кожному етапі.</p>
+      </div>
+      <a href="/suprovid-patsiientiv/" class="text-link">Як MEDHUB супроводжує пацієнта →</a>
+    </div>
+  </section>
+
+  <section class="section support-section">
+    <div class="container">
+      <h2>Вартість</h2>
+      <div class="support-body">
+        <p>Вартість діагностики та лікування в Sheba Medical Center визначається індивідуально, залежно від медичного випадку, обсягу досліджень і програми лікування. MEDHUB не встановлює медичні тарифи — координатор передає звернення до Sheba разом із документами, і центр формує орієнтовну вартість програми.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="faq">
+    <div class="container">
+      <h2>Часті запитання</h2>
+      <div class="faq-list">
+${SHEBA_UA_FAQ.map(([q, a]) => `        <div class="faq-item">
+          <h3>${q}</h3>
+          <p>${a}</p>
+        </div>`).join('\n')}
       </div>
     </div>
   </section>
 
   <section class="section section--tight">
     <div class="container">
+      <h2>Контакти MEDHUB в Україні</h2>
       <div class="contact-info-grid">
         <div class="contact-info-item">
           <h3>Телефон і WhatsApp (українська мова)</h3>
@@ -942,19 +1095,17 @@ pages.push({
           <p>Голосіївський проспект, 70, офісна будівля готелю «Мир», Київ</p>
         </div>
       </div>
-      <p><a href="/kontakty/" class="text-link">Усі контакти та форма звернення →</a></p>
+      <p><a href="/kontakty/" class="text-link">Усі контакти →</a></p>
     </div>
   </section>
 
-  <section class="section support-section">
-    <div class="container">
-      <h2>Пов'язані сторінки</h2>
-      <div class="support-body">
-        <p><a href="/sheba-medical-center/" class="text-link">Про сам Sheba Medical Center →</a></p>
-        <p><a href="/likuvannia-v-izraili/" class="text-link">Як організовано лікування в Ізраїлі →</a></p>
-        <p><a href="/suprovid-patsiientiv/" class="text-link">Допомога пацієнтам →</a></p>
-        <p><a href="/sheba-dopomoha-ukraini/" class="text-link">Допомога Sheba Medical Center Україні з 2022 року →</a></p>
+  <section class="section form-section" id="contact-form">
+    <div class="container form-section-inner">
+      <div class="form-intro">
+        <h2>Надіслати медичні документи</h2>
+        <p>Опишіть медичне питання та додайте наявні медичні документи — координатор MEDHUB передасть звернення до Sheba Medical Center.</p>
       </div>
+${renderConsultationForm()}
     </div>
   </section>
 
@@ -964,7 +1115,7 @@ ${ctaBand({
   text: "Надішліть медичні документи — координатор MEDHUB зв'яжеться з вами.",
   emphasis: '',
   primaryLabel: "Зв'язатися з MEDHUB",
-  primaryHref: '/kontakty/',
+  primaryHref: '#contact-form',
   secondaryLabel: 'Sheba Medical Center',
   secondaryHref: '/sheba-medical-center/',
   image: '/assets/temp-dev-refs/cta-consultation.jpg',
