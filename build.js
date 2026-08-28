@@ -46,6 +46,7 @@ const NAV = [
   { slug: 'home', href: '/', label: 'Головна' },
   { slug: 'pro-medhub', href: '/pro-medhub/', label: 'Про MEDHUB' },
   { slug: 'sheba-medical-center', href: '/sheba-medical-center/', label: 'Sheba Medical Center' },
+  { slug: 'sheba-ukraine', href: '/sheba-ukraine/', label: 'Sheba в Україні' },
   { slug: 'napriamy-likuvannia', href: '/napriamy-likuvannia/', label: 'Напрями лікування' },
   { slug: 'likari', href: '/likari/', label: 'Лікарі' },
   { slug: 'patsiientam', href: '/patsiientam/', label: 'Пацієнтам' },
@@ -236,8 +237,10 @@ function renderFooter(lang = 'uk') {
       <ul>
         <li><a href="${proMedhub}">${t.aboutMedhub}</a></li>
         <li><a href="${sheba}">${t.shebaLink}</a></li>
-        <li><a href="${directions}">${t.directionsLink}</a></li>
-        <li><a href="${doctors}">${t.doctorsLink}</a></li>
+${en ? '' : `        <li><a href="/sheba-ukraine/">Sheba в Україні</a></li>
+        <li><a href="/likuvannia-v-izraili/">Лікування в Ізраїлі</a></li>
+`}        <li><a href="${directions}">${t.directionsLink}</a></li>
+${en ? '' : '        <li><a href="/diagnostyka/">Діагностика</a></li>\n'}        <li><a href="${doctors}">${t.doctorsLink}</a></li>
       </ul>
     </div>
 
@@ -343,7 +346,7 @@ function renderConsultationForm(lang = 'uk') {
 // Page shell
 // ---------------------------------------------------------------------
 
-function renderPage({ slug, lang = 'uk', title, description, canonicalPath, mainHtml, schema }) {
+function renderPage({ slug, navSlug, lang = 'uk', title, description, canonicalPath, mainHtml, schema }) {
   const canonical = SITE_URL + canonicalPath;
   const en = lang === 'en';
   const family = PAGE_FAMILIES[slug];
@@ -388,7 +391,7 @@ ${(Array.isArray(schema) ? schema : [schema]).map((s) => `<script type="applicat
 <body>
 <a class="skip-link" href="#main-content">${en ? 'Skip to main content' : 'Перейти до основного вмісту'}</a>
 
-${renderHeader(slug, lang)}
+${renderHeader(navSlug || slug, lang)}
 
 <main id="main-content">
 ${mainHtml}
@@ -447,6 +450,34 @@ const MEDHUB_SCHEMA_EN = { ...MEDHUB_SCHEMA, description: LEGAL_DISCLOSURE_EN };
 // ---------------------------------------------------------------------
 // Reusable content fragments
 // ---------------------------------------------------------------------
+
+// Breadcrumb trail: pass [[name, href], ...] from Головна down to the
+// current page (href required on every item, including the last, so the
+// BreadcrumbList schema can carry a URL for each step). Returns both the
+// visible nav markup and the matching JSON-LD object — pass .schema into
+// the page's `schema` array and prepend .html to mainHtml.
+function crumbs(items) {
+  const html = `  <nav class="breadcrumbs" aria-label="Хлібні крихти">
+    <div class="container">
+      <ol>
+${items.map(([name, href], i) => i === items.length - 1
+    ? `        <li aria-current="page">${name}</li>`
+    : `        <li><a href="${href}">${name}</a></li>`).join('\n')}
+      </ol>
+    </div>
+  </nav>`;
+  const schema = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: items.map(([name, href], i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      name,
+      item: `${SITE_URL}${href}`,
+    })),
+  };
+  return { html, schema };
+}
 
 function titleBand(h1) {
   return `  <div class="title-band" id="top">
@@ -557,6 +588,21 @@ pages.push({
     </div>
   </section>
 
+  <section class="section" id="sheba-ukraine-links">
+    <div class="container advantages-inner">
+      <div class="advantage-item">
+        <h3><strong>Представник</strong> Sheba в Україні</h3>
+        <p>MEDHUB — авторизований представник Sheba Medical Center в Україні. Дізнайтеся, як звернутися до Sheba з України.</p>
+        <a href="/sheba-ukraine/" class="text-link">Представництво Sheba в Україні →</a>
+      </div>
+      <div class="advantage-item">
+        <h3><strong>Лікування</strong> в Ізраїлі</h3>
+        <p>Як організовано звернення, діагностику й лікування в Sheba Medical Center для пацієнтів з України.</p>
+        <a href="/likuvannia-v-izraili/" class="text-link">Лікування в Ізраїлі →</a>
+      </div>
+    </div>
+  </section>
+
   <section class="section" id="directions">
     <div class="container">
       <h2><strong>Напрями</strong> лікування</h2>
@@ -566,7 +612,7 @@ pages.push({
         <div class="direction-card"><h3>Кардіологія</h3><p>Діагностика та лікування захворювань серця і судин.</p></div>
         <div class="direction-card"><h3>Неврологія</h3><p>Діагностика та лікування захворювань нервової системи.</p></div>
         <div class="direction-card"><h3>Ортопедія</h3><p>Лікування захворювань і травм опорно-рухового апарату.</p></div>
-        <div class="direction-card"><h3>Гематологія</h3><p>Діагностика та лікування захворювань крові й кровотворної системи.</p></div>
+        <div class="direction-card"><h3>Онкогематологія</h3><p>Діагностика та лікування онкологічних захворювань крові й кровотворної системи.</p></div>
         <div class="direction-card"><h3>Трансплантологія</h3><p>Програми трансплантації органів і кісткового мозку.</p></div>
       </div>
       <a href="/napriamy-likuvannia/" class="text-link">Переглянути всі напрями лікування →</a>
@@ -603,14 +649,15 @@ ${ctaBand({
 });
 
 // ===== 2. ПРО MEDHUB ====================================================
+const BC_PRO_MEDHUB = crumbs([['Головна', '/'], ['Про MEDHUB', '/pro-medhub/']]);
 pages.push({
   slug: 'pro-medhub',
   outPath: 'pro-medhub/index.html',
   title: 'Про MEDHUB | Авторизований представник Sheba Medical Center в Україні',
   description: 'MEDHUB — авторизований представник Sheba Medical Center в Україні: координація звернень, супровід пацієнтів і комунікація з медичним центром в Ізраїлі.',
   canonicalPath: '/pro-medhub/',
-  schema: MEDHUB_SCHEMA,
-  mainHtml: `${titleBand('Про MEDHUB')}
+  schema: [MEDHUB_SCHEMA, BC_PRO_MEDHUB.schema],
+  mainHtml: `${BC_PRO_MEDHUB.html}${titleBand('Про MEDHUB')}
 
   <section class="hero">
     <div class="container hero-inner">
@@ -677,14 +724,15 @@ ${ctaBand({
 });
 
 // ===== 3. SHEBA MEDICAL CENTER ==========================================
+const BC_SHEBA = crumbs([['Головна', '/'], ['Sheba Medical Center', '/sheba-medical-center/']]);
 pages.push({
   slug: 'sheba-medical-center',
   outPath: 'sheba-medical-center/index.html',
   title: 'Sheba Medical Center | MEDHUB — представник в Україні',
   description: 'Sheba Medical Center — один із провідних медичних центрів Ізраїлю: клінічні напрями, діагностика, лікування, дослідження. MEDHUB організовує звернення українських пацієнтів.',
   canonicalPath: '/sheba-medical-center/',
-  schema: [MEDHUB_SCHEMA, SHEBA_SCHEMA],
-  mainHtml: `${titleBand('Sheba Medical Center')}
+  schema: [MEDHUB_SCHEMA, SHEBA_SCHEMA, BC_SHEBA.schema],
+  mainHtml: `${BC_SHEBA.html}${titleBand('Sheba Medical Center')}
 
   <section class="hero">
     <div class="container hero-inner">
@@ -744,9 +792,30 @@ pages.push({
     <div class="container">
       <h2><strong>Клінічні</strong> напрями</h2>
       <div class="support-body">
-        <p>Онкологія, кардіологія, неврологія, ортопедія, гематологія, педіатрія, реабілітація, трансплантологія та інші напрями — детальний перелік і короткий опис кожного напряму зібрано на окремій сторінці.</p>
+        <p>Онкологія, онкогематологія, кардіологія, неврологія, ортопедія, педіатрія, реабілітація, трансплантологія та інші напрями — детальний перелік і короткий опис кожного напряму зібрано на окремій сторінці.</p>
       </div>
       <a href="/napriamy-likuvannia/" class="text-link">Переглянути напрями лікування →</a>
+    </div>
+  </section>
+
+  <section class="section support-section">
+    <div class="container">
+      <h2>Організація лікування та діагностики</h2>
+      <div class="support-body">
+        <p>MEDHUB координує весь процес — від первинного звернення до організації візиту в Sheba Medical Center, включно з попередньою діагностикою.</p>
+      </div>
+      <p><a href="/likuvannia-v-izraili/" class="text-link">Як організовано лікування в Ізраїлі →</a></p>
+      <p><a href="/diagnostyka/" class="text-link">Діагностика в Sheba Medical Center →</a></p>
+    </div>
+  </section>
+
+  <section class="section support-section section-alt">
+    <div class="container">
+      <h2>Представництво в Україні</h2>
+      <div class="support-body">
+        <p>MEDHUB — авторизований представник Sheba Medical Center в Україні. Українські пацієнти звертаються до Sheba саме через MEDHUB.</p>
+      </div>
+      <a href="/sheba-ukraine/" class="text-link">Як звернутися до Sheba з України →</a>
     </div>
   </section>
 
@@ -775,45 +844,121 @@ ${ctaBand({
 `,
 });
 
-// ===== 3. НАПРЯМИ ЛІКУВАННЯ (catalog) ===================================
+// ===== SHEBA В УКРАЇНІ (representation / how to reach Sheba from Ukraine) =
+// Distinct search intent from /pro-medhub/ (about MEDHUB as a company) and
+// from /sheba-ukraine-dopomoha/ (2022– humanitarian aid history) — this
+// page answers "how does a Ukrainian patient reach Sheba / who represents
+// Sheba in Ukraine." Do not merge this content into either of those pages.
+const BC_SHEBA_UA = crumbs([['Головна', '/'], ['Sheba в Україні', '/sheba-ukraine/']]);
+pages.push({
+  slug: 'sheba-ukraine',
+  outPath: 'sheba-ukraine/index.html',
+  title: 'Представник Sheba Medical Center в Україні | MEDHUB',
+  description: 'MEDHUB — офіційний представник Sheba Medical Center в Україні. Як звернутися до Sheba Medical Center з України та зв\'язатися з координатором MEDHUB.',
+  canonicalPath: '/sheba-ukraine/',
+  schema: [MEDHUB_SCHEMA, SHEBA_SCHEMA, BC_SHEBA_UA.schema],
+  mainHtml: `${BC_SHEBA_UA.html}${titleBand('Представник Sheba Medical Center в Україні')}
+
+  <section class="section page-intro">
+    <div class="container">
+      <p>MEDHUB є авторизованим представником Sheba Medical Center в Україні. Це означає, що українські пацієнти звертаються до Sheba Medical Center не напряму, а через офіс MEDHUB у Києві — українською або російською мовою, без потреби самостійно шукати контакти в Ізраїлі чи долати мовний бар'єр.</p>
+    </div>
+  </section>
+
+  <section class="section support-section section-alt">
+    <div class="container">
+      <h2><strong>Що робить</strong> представництво в Україні</h2>
+      <div class="support-body">
+        <p>MEDHUB приймає звернення та медичні документи від українського пацієнта, передає їх профільному підрозділу Sheba Medical Center і координує відповідь — від первинної медичної оцінки до організації візиту в Ізраїль. Медичні рішення ухвалює виключно Sheba Medical Center.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--tight">
+    <div class="container">
+      <div class="contact-info-grid">
+        <div class="contact-info-item">
+          <h3>Телефон і WhatsApp (українська мова)</h3>
+          <p><a href="tel:+380674067357">+380 67 406 73 57</a></p>
+        </div>
+        <div class="contact-info-item">
+          <h3>Email</h3>
+          <p><a href="mailto:info@medhub.group">info@medhub.group</a></p>
+        </div>
+        <div class="contact-info-item">
+          <h3>Офіс представництва</h3>
+          <p>Голосіївський проспект, 70, офісна будівля готелю «Мир», Київ</p>
+        </div>
+      </div>
+      <p><a href="/kontakty/" class="text-link">Усі контакти та форма звернення →</a></p>
+    </div>
+  </section>
+
+  <section class="section support-section">
+    <div class="container">
+      <h2>Пов'язані сторінки</h2>
+      <div class="support-body">
+        <p><a href="/sheba-medical-center/" class="text-link">Про сам Sheba Medical Center →</a></p>
+        <p><a href="/likuvannia-v-izraili/" class="text-link">Як організовано лікування в Ізраїлі →</a></p>
+        <p><a href="/sheba-ukraine-dopomoha/" class="text-link">Допомога Sheba Medical Center Україні з 2022 року →</a></p>
+      </div>
+    </div>
+  </section>
+
+${ctaBand({
+  heading: 'Готові',
+  headingAccent: 'звернутися до Sheba через MEDHUB?',
+  text: "Надішліть медичні документи — координатор MEDHUB зв'яжеться з вами.",
+  emphasis: '',
+  primaryLabel: "Зв'язатися з MEDHUB",
+  primaryHref: '/kontakty/',
+  secondaryLabel: 'Sheba Medical Center',
+  secondaryHref: '/sheba-medical-center/',
+  image: '/assets/temp-dev-refs/cta-consultation.jpg',
+  imageAlt: 'Консультація лікаря з пацієнтом',
+})}
+`,
+});
+
+// ===== 3. НАПРЯМИ ЛІКУВАННЯ (catalog + one stub page per direction) =====
 const DIRECTIONS = [
   ['Онкологія', 'Діагностика та лікування онкологічних захворювань у дорослих і дітей, включно з хіміотерапією, променевою терапією та таргетною терапією.', 'onkologiya'],
+  ['Онкогематологія', 'Діагностика та лікування онкологічних захворювань крові та кровотворної системи — лейкемії, лімфоми та мієломи.', 'onkohematologiya'],
   ['Кардіологія', 'Діагностика та лікування захворювань серця і судин, включно з інвазивною кардіологією та кардіохірургією.', 'kardiologiya'],
+  ['Нейрохірургія', 'Хірургічне лікування захворювань і травм головного та спинного мозку.', 'neirohirurgiya'],
   ['Неврологія', 'Діагностика та лікування захворювань головного і спинного мозку, периферичної нервової системи.', 'nevrologiya'],
-  ['Нейрохірургія', 'Хірургічне лікування захворювань і травм головного та спинного мозку.', 'neirokhirurgiya'],
   ['Ортопедія', 'Лікування захворювань і травм опорно-рухового апарату, ендопротезування суглобів.', 'ortopediya'],
-  ['Гінекологія', 'Діагностика та лікування гінекологічних захворювань, включно з онкогінекологією.', 'ginekologiya'],
   ['Урологія', 'Діагностика та лікування захворювань сечостатевої системи.', 'urologiya'],
-  ['Гематологія', 'Діагностика та лікування захворювань крові й кровотворної системи.', 'gematologiya'],
+  ['Гінекологія', 'Діагностика та лікування гінекологічних захворювань, включно з онкогінекологією.', 'ginekologiya'],
+  ['Гастроентерологія', 'Діагностика та лікування захворювань травної системи — стравоходу, шлунка, кишечника, печінки та підшлункової залози.', 'gastroenterologiya'],
   ['Педіатрія', 'Діагностика та лікування дитячих захворювань, включно з дитячою онкологією та хірургією.', 'pediatriya'],
   ['Реабілітація', 'Реабілітаційні програми після інсульту, травм і хірургічних втручань.', 'reabilitatsiya'],
   ['Трансплантологія', 'Програми трансплантації органів і кісткового мозку.', 'transplantologiya'],
-  ['Генетика', 'Генетична діагностика, консультування та супровід пацієнтів зі спадковими захворюваннями.', 'genetyka'],
 ];
 
+const BC_NAPRIAMY = crumbs([['Головна', '/'], ['Напрями лікування', '/napriamy-likuvannia/']]);
 pages.push({
   slug: 'napriamy-likuvannia',
   outPath: 'napriamy-likuvannia/index.html',
   title: 'Напрями лікування в Sheba Medical Center | MEDHUB',
-  description: 'Напрями лікування в Sheba Medical Center: онкологія, кардіологія, неврологія, ортопедія, гематологія, педіатрія, реабілітація, трансплантологія та інші. MEDHUB організовує звернення українських пацієнтів.',
+  description: 'Напрями лікування в Sheba Medical Center: онкологія, онкогематологія, кардіологія, неврологія, ортопедія, гастроентерологія, педіатрія, реабілітація, трансплантологія та інші. MEDHUB організовує звернення українських пацієнтів.',
   canonicalPath: '/napriamy-likuvannia/',
-  schema: [MEDHUB_SCHEMA, SHEBA_SCHEMA],
-  mainHtml: `${titleBand('Напрями лікування')}
+  schema: [MEDHUB_SCHEMA, SHEBA_SCHEMA, BC_NAPRIAMY.schema],
+  mainHtml: `${BC_NAPRIAMY.html}${titleBand('Напрями лікування')}
 
   <section class="section page-intro">
     <div class="container">
-      <p>Лікування за всіма напрямами нижче проводиться в Sheba Medical Center. MEDHUB, як представник центру в Україні, координує звернення пацієнта та передає медичні документи профільному підрозділу. Кожен напрям згодом отримає власну детальну сторінку.</p>
+      <p>Лікування за всіма напрямами нижче проводиться в Sheba Medical Center. MEDHUB, як представник центру в Україні, координує звернення пацієнта та передає медичні документи профільному підрозділу. Кожен напрям має власну сторінку — детальний опис буде доповнено найближчим часом.</p>
     </div>
   </section>
 
   <section class="section section--tight">
     <div class="container">
       <div class="directions-grid">
-${DIRECTIONS.map(([name, desc, slug]) => `        <!-- future page: /napriamy-likuvannia/${slug}/ -->
-        <div class="direction-card">
+${DIRECTIONS.map(([name, desc, slug]) => `        <a class="direction-card" href="/napriamy-likuvannia/${slug}/">
           <h3>${name} в Sheba Medical Center</h3>
           <p>${desc}</p>
-        </div>`).join('\n')}
+        </a>`).join('\n')}
       </div>
     </div>
   </section>
@@ -827,6 +972,184 @@ ${ctaBand({
   primaryHref: '/kontakty/',
   secondaryLabel: 'Лікарі Sheba',
   secondaryHref: '/likari/',
+  image: '/assets/temp-dev-refs/cta-consultation.jpg',
+  imageAlt: 'Консультація лікаря з пацієнтом',
+})}
+`,
+});
+
+// One thin stub page per direction — real routing/breadcrumbs/metadata now,
+// full articles come in a later stage (do not expand these into long-form
+// content here; see the project brief for the staged content plan).
+for (const [name, desc, slug] of DIRECTIONS) {
+  const bcDirection = crumbs([
+    ['Головна', '/'],
+    ['Напрями лікування', '/napriamy-likuvannia/'],
+    [name, `/napriamy-likuvannia/${slug}/`],
+  ]);
+  pages.push({
+    slug: `napriamy-likuvannia--${slug}`,
+    navSlug: 'napriamy-likuvannia',
+    outPath: `napriamy-likuvannia/${slug}/index.html`,
+    title: `${name} в Sheba Medical Center | MEDHUB`,
+    description: `${desc} MEDHUB координує звернення українських пацієнтів до Sheba Medical Center за напрямом «${name.toLowerCase()}».`,
+    canonicalPath: `/napriamy-likuvannia/${slug}/`,
+    schema: [MEDHUB_SCHEMA, SHEBA_SCHEMA, bcDirection.schema],
+    mainHtml: `${bcDirection.html}${titleBand(`${name} в Sheba Medical Center`)}
+
+  <section class="section page-intro">
+    <div class="container">
+      <p>${desc}</p>
+      <p class="info-note">Детальний опис цього напряму готується. Щоб дізнатися про можливості діагностики й лікування вже зараз, зверніться до координатора MEDHUB.</p>
+    </div>
+  </section>
+
+${ctaBand({
+    heading: 'Потрібна консультація',
+    headingAccent: `щодо напряму «${name.toLowerCase()}»?`,
+    text: 'Надішліть медичні документи — координатор MEDHUB передасть їх профільному підрозділу Sheba Medical Center.',
+    emphasis: '',
+    primaryLabel: 'Отримати консультацію',
+    primaryHref: '/kontakty/',
+    secondaryLabel: 'Усі напрями лікування',
+    secondaryHref: '/napriamy-likuvannia/',
+    image: '/assets/temp-dev-refs/cta-consultation.jpg',
+    imageAlt: 'Консультація лікаря з пацієнтом',
+  })}
+`,
+  });
+}
+
+// ===== ЛІКУВАННЯ В ІЗРАЇЛІ (process hub — distinct from /patsiientam/'s ==
+// step-by-step guide and from /napriamy-likuvannia/'s specialty catalog;
+// this page is the broad entry point for the "лікування в Ізраїлі" intent
+// and links out to those pages instead of repeating their content).
+const BC_LIKUVANNIA = crumbs([['Головна', '/'], ['Лікування в Ізраїлі', '/likuvannia-v-izraili/']]);
+pages.push({
+  slug: 'likuvannia-v-izraili',
+  outPath: 'likuvannia-v-izraili/index.html',
+  title: 'Лікування в Ізраїлі для українців | MEDHUB',
+  description: 'Лікування в Ізраїлі для українських пацієнтів у Sheba Medical Center: напрями лікування, діагностика та організація візиту. Координує MEDHUB — представник Sheba в Україні.',
+  canonicalPath: '/likuvannia-v-izraili/',
+  schema: [MEDHUB_SCHEMA, SHEBA_SCHEMA, BC_LIKUVANNIA.schema],
+  mainHtml: `${BC_LIKUVANNIA.html}${titleBand('Лікування в Ізраїлі для пацієнтів з України')}
+
+  <section class="section page-intro">
+    <div class="container">
+      <p>Лікування в Ізраїлі — це звернення до конкретного медичного центру, а не абстрактна послуга. MEDHUB організовує звернення українських пацієнтів саме до Sheba Medical Center: від первинної медичної оцінки документів до діагностики й лікування у профільному відділенні. Цей процес іноді називають «медичним туризмом», але по суті це організоване медичне звернення до Sheba Medical Center.</p>
+    </div>
+  </section>
+
+  <section class="section support-section section-alt">
+    <div class="container">
+      <h2><strong>Медичний центр,</strong> де проходить лікування</h2>
+      <div class="support-body">
+        <p>Лікування відбувається в Sheba Medical Center — одному з найбільших багатопрофільних медичних центрів Ізраїлю, поблизу Тель-Авіва.</p>
+      </div>
+      <a href="/sheba-medical-center/" class="text-link">Про Sheba Medical Center →</a>
+    </div>
+  </section>
+
+  <section class="section support-section">
+    <div class="container">
+      <h2><strong>Напрями</strong> лікування</h2>
+      <div class="support-body">
+        <p>Онкологія, кардіологія, неврологія, ортопедія, педіатрія та інші напрями — Sheba Medical Center приймає пацієнтів за широким спектром клінічних профілів.</p>
+      </div>
+      <a href="/napriamy-likuvannia/" class="text-link">Переглянути напрями лікування →</a>
+    </div>
+  </section>
+
+  <section class="section support-section section-alt">
+    <div class="container">
+      <h2><strong>Діагностика</strong> перед лікуванням</h2>
+      <div class="support-body">
+        <p>Перед формуванням програми лікування Sheba Medical Center, як правило, проводить власну діагностику — щоб програма спиралася на актуальні дані, а не лише на документи, привезені з України.</p>
+      </div>
+      <a href="/diagnostyka/" class="text-link">Діагностика в Sheba Medical Center →</a>
+    </div>
+  </section>
+
+  <section class="section support-section">
+    <div class="container">
+      <h2><strong>Як</strong> відбувається звернення</h2>
+      <div class="support-body">
+        <p>Покроковий процес — від першого звернення до MEDHUB і до перебування в Ізраїлі — описано на окремій сторінці для пацієнтів.</p>
+      </div>
+      <a href="/patsiientam/" class="text-link">Як звернутися: покроковий процес →</a>
+    </div>
+  </section>
+
+${ctaBand({
+  heading: 'Готові організувати',
+  headingAccent: 'лікування в Ізраїлі?',
+  text: 'Надішліть медичні документи — координатор MEDHUB передасть їх Sheba Medical Center.',
+  emphasis: '',
+  primaryLabel: 'Отримати консультацію',
+  primaryHref: '/kontakty/',
+  secondaryLabel: 'Напрями лікування',
+  secondaryHref: '/napriamy-likuvannia/',
+  image: '/assets/temp-dev-refs/cta-consultation.jpg',
+  imageAlt: 'Консультація лікаря з пацієнтом',
+})}
+`,
+});
+
+// ===== ДІАГНОСТИКА (hub — sub-pages like /diagnostyka/pet-ct/ come later; ==
+// listed here descriptively, not yet as links, so nothing points to a
+// URL that doesn't exist yet).
+const BC_DIAGNOSTYKA = crumbs([['Головна', '/'], ['Діагностика', '/diagnostyka/']]);
+pages.push({
+  slug: 'diagnostyka',
+  outPath: 'diagnostyka/index.html',
+  title: 'Діагностика в Ізраїлі | MEDHUB',
+  description: 'Діагностика в Sheba Medical Center для українських пацієнтів: ПЕТ-КТ, МРТ, чек-ап, другий медичний висновок. MEDHUB координує звернення українських пацієнтів.',
+  canonicalPath: '/diagnostyka/',
+  schema: [MEDHUB_SCHEMA, SHEBA_SCHEMA, BC_DIAGNOSTYKA.schema],
+  mainHtml: `${BC_DIAGNOSTYKA.html}${titleBand('Діагностика в Sheba Medical Center')}
+
+  <section class="section page-intro">
+    <div class="container">
+      <p>Sheba Medical Center проводить власну діагностику перед формуванням програми лікування, а також для пацієнтів, яким потрібен другий медичний висновок. MEDHUB координує передачу направлення та результатів між пацієнтом і профільним підрозділом Sheba.</p>
+    </div>
+  </section>
+
+  <section class="section section--tight">
+    <div class="container">
+      <div class="directions-grid">
+        <!-- future page: /diagnostyka/pet-ct/ -->
+        <div class="direction-card">
+          <h3>ПЕТ-КТ</h3>
+          <p>Позитронно-емісійна томографія, суміщена з комп'ютерною томографією — переважно в онкологічній діагностиці.</p>
+        </div>
+        <!-- future page: /diagnostyka/mri/ -->
+        <div class="direction-card">
+          <h3>МРТ</h3>
+          <p>Магнітно-резонансна томографія для діагностики широкого кола захворювань.</p>
+        </div>
+        <!-- future page: /diagnostyka/check-up/ -->
+        <div class="direction-card">
+          <h3>Чек-ап</h3>
+          <p>Комплексне медичне обстеження для загальної оцінки стану здоров'я.</p>
+        </div>
+        <!-- future page: /diagnostyka/drugyi-medychnyi-vysnovok/ -->
+        <div class="direction-card">
+          <h3>Другий медичний висновок</h3>
+          <p>Повторна оцінка наявного діагнозу чи програми лікування фахівцями Sheba Medical Center.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+${ctaBand({
+  heading: 'Потрібна',
+  headingAccent: 'діагностика в Sheba?',
+  text: 'Надішліть наявні медичні документи — координатор MEDHUB уточнить, яке обстеження потрібне.',
+  emphasis: '',
+  primaryLabel: 'Отримати консультацію',
+  primaryHref: '/kontakty/',
+  secondaryLabel: 'Лікування в Ізраїлі',
+  secondaryHref: '/likuvannia-v-izraili/',
   image: '/assets/temp-dev-refs/cta-consultation.jpg',
   imageAlt: 'Консультація лікаря з пацієнтом',
 })}
@@ -855,14 +1178,15 @@ const DOCTORS = [
   ['/assets/team/milana-tilyuk.jpg', 'Мілана Тілюк', 'Медична координаторка у сфері педіатрії та дитячої гематоонкології', 'іврит, російська'],
 ];
 
+const BC_LIKARI = crumbs([['Головна', '/'], ['Команда Sheba', '/likari/']]);
 pages.push({
   slug: 'likari',
   outPath: 'likari/index.html',
   title: 'Команда Sheba Medical Center | MEDHUB',
   description: 'Медичні консультанти та координатори департаменту міжнародних пацієнтів Sheba Medical Center. MEDHUB координує звернення українських пацієнтів до цієї команди.',
   canonicalPath: '/likari/',
-  schema: [MEDHUB_SCHEMA, SHEBA_SCHEMA],
-  mainHtml: `${titleBand('Команда Sheba Medical Center')}
+  schema: [MEDHUB_SCHEMA, SHEBA_SCHEMA, BC_LIKARI.schema],
+  mainHtml: `${BC_LIKARI.html}${titleBand('Команда Sheba Medical Center')}
 
   <section class="section page-intro">
     <div class="container">
@@ -910,14 +1234,15 @@ const FAQ = [
   ['Хто приймає рішення про програму лікування?', 'Медичну оцінку та програму діагностики чи лікування визначають виключно лікарі Sheba Medical Center. MEDHUB координує процес, але не приймає медичних рішень.'],
 ];
 
+const BC_PATSIIENTAM = crumbs([['Головна', '/'], ['Пацієнтам', '/patsiientam/']]);
 pages.push({
   slug: 'patsiientam',
   outPath: 'patsiientam/index.html',
   title: 'Пацієнтам | MEDHUB — представник Sheba Medical Center в Україні',
   description: 'Як звернутися до MEDHUB, які документи потрібні, як відбувається медична оцінка, підготовка до візиту в Sheba Medical Center та відповіді на часті запитання.',
   canonicalPath: '/patsiientam/',
-  schema: MEDHUB_SCHEMA,
-  mainHtml: `${titleBand('Пацієнтам')}
+  schema: [MEDHUB_SCHEMA, BC_PATSIIENTAM.schema],
+  mainHtml: `${BC_PATSIIENTAM.html}${titleBand('Пацієнтам')}
 
   <section class="section page-intro">
     <div class="container">
@@ -986,14 +1311,15 @@ ${ctaBand({
 });
 
 // ===== 6. КОНТАКТИ =======================================================
+const BC_KONTAKTY = crumbs([['Головна', '/'], ['Контакти', '/kontakty/']]);
 pages.push({
   slug: 'kontakty',
   outPath: 'kontakty/index.html',
   title: 'Контакти MEDHUB | Авторизований представник Sheba Medical Center в Україні',
   description: 'Контакти MEDHUB в Україні: телефон, WhatsApp, email, адреса, години роботи та форма для надсилання медичних документів.',
   canonicalPath: '/kontakty/',
-  schema: MEDHUB_SCHEMA,
-  mainHtml: `${titleBand('Контакти MEDHUB')}
+  schema: [MEDHUB_SCHEMA, BC_KONTAKTY.schema],
+  mainHtml: `${BC_KONTAKTY.html}${titleBand('Контакти MEDHUB')}
 
   <section class="section page-intro">
     <div class="container">
@@ -1627,15 +1953,11 @@ const SHEBA_UKRAINE_SCHEMA = {
   about: { '@type': 'MedicalOrganization', name: SHEBA_NAME },
 };
 
-const BREADCRUMB_SCHEMA = {
-  '@context': 'https://schema.org',
-  '@type': 'BreadcrumbList',
-  itemListElement: [
-    { '@type': 'ListItem', position: 1, name: 'Головна', item: `${SITE_URL}/` },
-    { '@type': 'ListItem', position: 2, name: 'Sheba Medical Center', item: `${SITE_URL}/sheba-medical-center/` },
-    { '@type': 'ListItem', position: 3, name: 'Sheba Medical Center та Україна: допомога з 2022 року', item: `${SITE_URL}/sheba-ukraine-dopomoha/` },
-  ],
-};
+const BC_DOPOMOHA = crumbs([
+  ['Головна', '/'],
+  ['Sheba Medical Center', '/sheba-medical-center/'],
+  ['Допомога Україні з 2022 року', '/sheba-ukraine-dopomoha/'],
+]);
 
 pages.push({
   slug: 'sheba-ukraine-dopomoha',
@@ -1643,8 +1965,8 @@ pages.push({
   title: 'Sheba Medical Center та Україна: медична допомога з 2022 року | MEDHUB',
   description: 'Від польового госпіталю Kochav Meir та телемедицини до мобільної клініки жіночого здоров\'я, навчання українських лікарів і діагностичного центру в Києві. Історія допомоги Sheba Medical Center Україні з 2022 року.',
   canonicalPath: '/sheba-ukraine-dopomoha/',
-  schema: [SHEBA_UKRAINE_SCHEMA, BREADCRUMB_SCHEMA, MEDHUB_SCHEMA, SHEBA_SCHEMA],
-  mainHtml: `  <section class="history-hero">
+  schema: [SHEBA_UKRAINE_SCHEMA, BC_DOPOMOHA.schema, MEDHUB_SCHEMA, SHEBA_SCHEMA],
+  mainHtml: `${BC_DOPOMOHA.html}  <section class="history-hero">
     <div class="history-hero-media">
       <!-- Photo: Sheba Medical Center (shebaonline.org) — aerial view of the Kochav Meir field hospital tent complex, Mostyska, 2022 -->
       <img src="/assets/temp-dev-refs/kochav-meir-tents.jpg" alt="Польовий госпіталь Kochav Meir у Мостиськах, 2022 рік" loading="eager" width="768" height="1024">
@@ -1831,7 +2153,7 @@ pages.push({
 
   <section class="section">
     <div class="container">
-      <p class="section-lead">Дізнайтеся більше: <a href="/sheba-medical-center/" class="text-link">Sheba Medical Center →</a> · <a href="/napriamy-likuvannia/" class="text-link">Напрями лікування →</a> · <a href="/likari/" class="text-link">Лікарі →</a> · <a href="/kontakty/" class="text-link">Контакти →</a></p>
+      <p class="section-lead">Дізнайтеся більше: <a href="/sheba-medical-center/" class="text-link">Sheba Medical Center →</a> · <a href="/sheba-ukraine/" class="text-link">Представник Sheba в Україні →</a> · <a href="/napriamy-likuvannia/" class="text-link">Напрями лікування →</a> · <a href="/likari/" class="text-link">Лікарі →</a> · <a href="/kontakty/" class="text-link">Контакти →</a></p>
     </div>
   </section>
 

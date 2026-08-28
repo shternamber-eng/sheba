@@ -469,6 +469,46 @@ ul, ol {
 }
 
 /* =========================================================
+   Breadcrumbs
+   ========================================================= */
+
+.breadcrumbs {
+  padding: 14px 0;
+  font-size: 0.85rem;
+}
+
+.breadcrumbs ol {
+  display: flex;
+  flex-wrap: wrap;
+  list-style: none;
+}
+
+.breadcrumbs li {
+  color: var(--color-text-muted);
+}
+
+.breadcrumbs li:not(:last-child)::after {
+  content: '\2192';
+  margin: 0 8px;
+  color: var(--color-border);
+}
+
+.breadcrumbs a {
+  color: var(--color-text-muted);
+  text-decoration: none;
+}
+
+.breadcrumbs a:hover {
+  text-decoration: underline;
+  color: var(--color-navy);
+}
+
+.breadcrumbs li[aria-current="page"] {
+  color: var(--color-navy);
+  font-weight: 600;
+}
+
+/* =========================================================
    Title band — H1 on navy, decorative brand swoosh
    ========================================================= */
 
@@ -846,6 +886,11 @@ ul, ol {
   min-width: 0;
   background: var(--color-white);
   padding: 30px 28px;
+  display: block;
+}
+
+.direction-card:hover {
+  background: var(--color-bg-alt);
 }
 
 .direction-card h3 {
@@ -861,7 +906,7 @@ ul, ol {
 
 /* Doctors catalog */
 
-.doctor-demo-note {
+.info-note {
   background: var(--color-bg-alt);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-sm);
