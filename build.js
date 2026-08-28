@@ -1363,12 +1363,207 @@ ${ctaBand({
 `,
 });
 
-// ===== 4. КОМАНДА SHEBA (real International Patient Department staff) ===
+// ===== 4. ЛІКАРІ SHEBA MEDICAL CENTER (real, currently practicing clinical
+// physicians) =============================================================
+// Every entry below was individually verified against its own official
+// shebaonline.org/doctors/ profile (fetched during this edit) for: current
+// title(s), specialty, and active-practice status. Do not add a name here
+// without that same verification — a doctor who has left Sheba must not
+// appear (see the Amit Segev exclusion note in the project brief).
+//
+// Zeilig/Bondi note: both officially list "Director of the Department of
+// Neurological Rehabilitation." Bondi's own profile frames Zeilig as a past
+// training supervisor, not a current co-director, so Zeilig is shown here
+// with only his unique titles (President of the department; Director of the
+// Spinal Cord Injury Unit) to avoid publishing the conflicting line twice.
+//
+// filterKeys: space-separated keys matching .physician-filter data-filter
+// values, so a doctor can appear under more than one tab (e.g. pediatric
+// hemato-oncologists under both "Онкогематологія" and "Педіатрія").
+const CLINICAL_DOCTORS = [
+  {
+    slug: 'raanan-berger', initials: 'РБ',
+    nameUa: 'Проф. Раанан Бергер', nameOrig: 'Prof. Raanan Berger',
+    titleUa: 'Директор онкологічного центру Sheba Medical Center',
+    specialtyUa: 'Онкологія', filterKeys: 'onkologiya',
+    tagsUa: ['Онкологія', 'Урогенітальна онкологія', 'Рак передміхурової залози'],
+    officialUrl: 'https://www.shebaonline.org/doctors/dr-raanan-berger/',
+  },
+  {
+    slug: 'dov-zippel', initials: 'ДЗ',
+    nameUa: 'Проф. Дов Зіппель', nameOrig: 'Prof. Dov Zippel',
+    titleUa: 'Керівник Meirav Breast Center, Sheba Medical Center',
+    specialtyUa: 'Онкологія', filterKeys: 'onkologiya',
+    tagsUa: ['Хірургічна онкологія', 'Рак молочної залози', 'Меланома'],
+    officialUrl: 'https://www.shebaonline.org/doctors/dov-zippel/',
+  },
+  {
+    slug: 'tal-shapira-rotenberg', initials: 'ТШ',
+    nameUa: 'Д-р Таль Шапіра-Ротенберг', nameOrig: 'Dr. Tal Shapira-Rotenberg',
+    titleUa: 'Старша лікарка відділення раку молочної залози, Jusidman Oncology Hospital',
+    specialtyUa: 'Онкологія', filterKeys: 'onkologiya',
+    tagsUa: ['Онкологія молочної залози', 'Метастатичний рак молочної залози'],
+    officialUrl: 'https://www.shebaonline.org/doctors/tal-shapira-rotenberg/',
+  },
+  {
+    slug: 'arnon-nagler', initials: 'АН',
+    nameUa: 'Проф. Арнон Наглер', nameOrig: 'Prof. Arnon Nagler',
+    titleUa: 'Президент Центру онкогематології; керівник трансплантації кісткового мозку та банку пуповинної крові',
+    specialtyUa: 'Онкогематологія', filterKeys: 'onkohematologiya',
+    tagsUa: ['Гематологія', 'Трансплантація кісткового мозку', 'Клітинна терапія'],
+    officialUrl: 'https://www.shebaonline.org/doctors/dr-arnon-nagler/',
+  },
+  {
+    slug: 'elad-jacoby', initials: 'ЕЯ',
+    nameUa: 'Проф. Елад Якобі', nameOrig: 'Prof. Elad Jacoby',
+    titleUa: 'Керівник Центру дитячої клітинної терапії, Sheba Medical Center',
+    specialtyUa: 'Онкогематологія', filterKeys: 'onkohematologiya pediatriya',
+    tagsUa: ['Дитяча онкогематологія', 'Лейкемія', 'CAR-T', 'Трансплантація'],
+    officialUrl: 'https://www.shebaonline.org/doctors/elad-jacoby/',
+  },
+  {
+    slug: 'hana-golan', initials: 'ХГ',
+    nameUa: 'Д-р Хана Голан', nameOrig: 'Dr. Hana Golan',
+    titleUa: 'Керівниця відділення дитячої онкогематології та трансплантації кісткового мозку',
+    specialtyUa: 'Онкогематологія', filterKeys: 'onkohematologiya pediatriya',
+    tagsUa: ['Дитяча онкологія', 'Нейробластома', 'Трансплантація стовбурових клітин'],
+    officialUrl: 'https://www.shebaonline.org/doctors/hana-golan/',
+  },
+  {
+    slug: 'zvi-cohen', initials: 'ЦК',
+    nameUa: 'Проф. Цві Коен', nameOrig: 'Prof. Zvi Cohen',
+    titleUa: 'Керівник відділення нейрохірургії; керівник відділу радіохірургії',
+    specialtyUa: 'Нейрохірургія', filterKeys: 'neirohirurgiya',
+    tagsUa: ['Пухлини головного мозку', 'Пухлини хребта', 'Аденоми гіпофіза', 'Радіохірургія'],
+    officialUrl: 'https://www.shebaonline.org/doctors/zvi-cohen/',
+  },
+  {
+    slug: 'anat-achiron', initials: 'АА',
+    nameUa: 'Проф. Анат Ахірон', nameOrig: 'Prof. Anat Achiron',
+    titleUa: 'Керівниця Центру розсіяного склерозу, Sheba Medical Center',
+    specialtyUa: 'Неврологія', filterKeys: 'nevrologiya',
+    tagsUa: ['Розсіяний склероз', 'Нейроімунологія'],
+    officialUrl: 'https://www.shebaonline.org/doctors/anat-achiron/',
+  },
+  {
+    slug: 'gabriel-zeilig', initials: 'ГЦ',
+    nameUa: 'Проф. Габі Цайліг', nameOrig: 'Prof. Gabriel Zeilig',
+    titleUa: 'Президент відділення нейрореабілітації; керівник Національного відділення реабілітації при травмах спинного мозку',
+    specialtyUa: 'Реабілітація', filterKeys: 'reabilitatsiya',
+    tagsUa: ['Нейрореабілітація', 'Травми спинного мозку', 'Розсіяний склероз'],
+    officialUrl: 'https://www.shebaonline.org/doctors/gabriel-zeilig/',
+  },
+  {
+    slug: 'moshe-bondi', initials: 'МБ',
+    nameUa: 'Д-р Моше Бонді', nameOrig: 'Dr. Moshe Bondi',
+    titleUa: 'Керівник відділення нейрореабілітації, Sheba Medical Center',
+    specialtyUa: 'Реабілітація', filterKeys: 'reabilitatsiya',
+    tagsUa: ['Нейрореабілітація', 'Хвороба Паркінсона', 'Больова реабілітація'],
+    officialUrl: 'https://www.shebaonline.org/doctors/moshe-bondi-md/',
+  },
+  {
+    slug: 'roy-beinart', initials: 'РБ',
+    nameUa: 'Проф. Рой Бейнарт', nameOrig: 'Prof. Roy Beinart',
+    titleUa: 'Керівник відділення кардіології, Sheba Medical Center',
+    specialtyUa: 'Кардіологія', filterKeys: 'kardiologiya',
+    tagsUa: ['Аритмії', 'Електрофізіологія', 'Кардіостимулятори'],
+    officialUrl: 'https://www.shebaonline.org/doctors/roy-beinart/',
+  },
+  {
+    slug: 'eyal-nof', initials: 'ЕН',
+    nameUa: 'Проф. Еяль Ноф', nameOrig: 'Prof. Eyal Nof',
+    titleUa: 'Керівник Davidai Arrhythmia Center; керівник інвазивної електрофізіології',
+    specialtyUa: 'Кардіологія', filterKeys: 'kardiologiya',
+    tagsUa: ['Аритмологія', 'Електрофізіологія', 'Абляція'],
+    officialUrl: 'https://www.shebaonline.org/doctors/prof-eyal-nof/',
+  },
+  {
+    slug: 'romana-herscovici', initials: 'РГ',
+    nameUa: 'Д-р Романа Герсковичі', nameOrig: 'Dr. Romana Herscovici',
+    titleUa: "Керівниця Центру жіночого серця (Women's Heart Center), Sheba Medical Center",
+    specialtyUa: 'Кардіологія', filterKeys: 'kardiologiya',
+    tagsUa: ['Жіноча кардіологія', 'SCAD', 'INOCA/MINOCA'],
+    officialUrl: 'https://www.shebaonline.org/doctors/romana-herscovici/',
+  },
+  {
+    slug: 'leonid-sternik', initials: 'ЛС',
+    nameUa: 'Проф. Леонід Стернік', nameOrig: 'Prof. Leonid Sternik',
+    titleUa: 'Керівник відділення кардіохірургії, Sheba Medical Center',
+    specialtyUa: 'Кардіохірургія', filterKeys: 'kardiohirurgiya',
+    tagsUa: ['Коронарне шунтування', 'Операції на клапанах', 'Хірургія аорти'],
+    officialUrl: 'https://www.shebaonline.org/doctors/leonid-sternik/',
+    langsUa: 'іврит, англійська, російська',
+  },
+  {
+    slug: 'zohar-dotan', initials: 'ЗД',
+    nameUa: 'Д-р Зохар Дотан', nameOrig: 'Dr. Zohar Dotan',
+    titleUa: 'Керівник відділення урології, Sheba Medical Center',
+    specialtyUa: 'Урологія', filterKeys: 'urologiya',
+    tagsUa: ['Уроонкологія', 'Рак простати', 'Рак нирки', 'Роботизована хірургія'],
+    officialUrl: 'https://www.shebaonline.org/doctors/zohar-dotan/',
+  },
+  {
+    slug: 'roy-mashiach', initials: 'РМ',
+    nameUa: 'Д-р Рой Машіах', nameOrig: 'Dr. Roy Mashiach',
+    titleUa: 'Керівник відділення гінекології, Sheba Medical Center',
+    specialtyUa: 'Гінекологія', filterKeys: 'ginekologiya',
+    tagsUa: ['Ендометріоз', 'Лапароскопія', 'Малоінвазивна хірургія'],
+    officialUrl: 'https://www.shebaonline.org/doctors/dr-roy-mashiach/',
+  },
+  {
+    slug: 'shomron-ben-horin', initials: 'ШБ',
+    nameUa: 'Проф. Шомрон Бен-Хорін', nameOrig: 'Prof. Shomron Ben-Horin',
+    titleUa: 'Керівник Інституту гастроентерології, Sheba Medical Center',
+    specialtyUa: 'Гастроентерологія', filterKeys: 'gastroenterologiya',
+    tagsUa: ['Хвороба Крона', 'Виразковий коліт', 'Целіакія', 'Ендоскопія'],
+    officialUrl: 'https://www.shebaonline.org/doctors/shomron-ben-horin/',
+  },
+  {
+    slug: 'amir-tirosh', initials: 'АТ',
+    nameUa: 'Проф. Амір Тірош', nameOrig: 'Prof. Amir Tirosh',
+    titleUa: 'Керівник Центру дослідження діабету та ендокринології, Sheba Medical Center',
+    specialtyUa: 'Ендокринологія', filterKeys: 'endokrynologiya',
+    tagsUa: ['Цукровий діабет', 'Метаболічні порушення'],
+    officialUrl: 'https://www.shebaonline.org/doctors/amir-tirosh/',
+    langsUa: 'іврит, англійська',
+  },
+];
+
+// "Усі" + one tab per filterKeys value actually used above (Ендокринологія
+// added — the brief's own filter list omitted it despite listing Dr. Tirosh).
+const PHYSICIAN_FILTERS = [
+  ['all', 'Усі'],
+  ['onkologiya', 'Онкологія'],
+  ['onkohematologiya', 'Онкогематологія'],
+  ['neirohirurgiya', 'Нейрохірургія'],
+  ['nevrologiya', 'Неврологія'],
+  ['kardiologiya', 'Кардіологія'],
+  ['kardiohirurgiya', 'Кардіохірургія'],
+  ['urologiya', 'Урологія'],
+  ['ginekologiya', 'Гінекологія'],
+  ['gastroenterologiya', 'Гастроентерологія'],
+  ['endokrynologiya', 'Ендокринологія'],
+  ['reabilitatsiya', 'Реабілітація'],
+  ['pediatriya', 'Педіатрія'],
+];
+
+function physicianSchema(doc) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'Physician',
+    name: `${doc.nameUa} (${doc.nameOrig})`,
+    jobTitle: doc.titleUa,
+    medicalSpecialty: doc.specialtyUa,
+    worksFor: { '@type': 'MedicalOrganization', name: 'Sheba Medical Center', url: 'https://www.shebaonline.org' },
+    url: doc.officialUrl,
+  };
+}
+
+// ===== INTERNATIONAL PATIENT DEPARTMENT TEAM (real staff, not clinicians) =
 // Source: https://www.shebaonline.ru/nashi-sotrudniki/ — names, titles and
-// languages are as published there. These are medical coordinators/curators/
-// consultants of Sheba's International Patient Department, not attending
-// physicians — do not relabel them with clinical specialties they don't hold.
-const DOCTORS = [
+// languages are as published there. Kept as a compact block below the
+// physician catalog — never mixed into it, per the project brief.
+const COORDINATORS = [
   ['/assets/team/mika-amram.jpg', 'Міка Амрам', 'Директорка департаменту міжнародних пацієнтів', 'іврит, англійська'],
   ['/assets/team/vered-cohen.jpg', 'Веред Коен Хершафт', 'Керівниця департаменту глобальних медичних послуг', ''],
   ['/assets/team/yelena-kolesnik.jpg', 'Олена Колесник', 'Старша медична координаторка', 'іврит, російська, англійська'],
@@ -1385,26 +1580,62 @@ const DOCTORS = [
   ['/assets/team/milana-tilyuk.jpg', 'Мілана Тілюк', 'Медична координаторка у сфері педіатрії та дитячої гематоонкології', 'іврит, російська'],
 ];
 
-const BC_LIKARI = crumbs([['Головна', '/'], ['Команда Sheba', '/likari/']]);
+const BC_LIKARI = crumbs([['Головна', '/'], ['Лікарі', '/likari/']]);
 pages.push({
   slug: 'likari',
   outPath: 'likari/index.html',
-  title: 'Команда Sheba Medical Center | MEDHUB',
-  description: 'Медичні консультанти та координатори департаменту міжнародних пацієнтів Sheba Medical Center. MEDHUB координує звернення українських пацієнтів до цієї команди.',
+  title: 'Лікарі Sheba Medical Center в Ізраїлі | MEDHUB',
+  description: 'Провідні лікарі Sheba Medical Center: онкологи, гематологи, нейрохірурги, кардіологи, урологи, гінекологи, неврологи, реабілітологи та інші спеціалісти. MEDHUB координує звернення пацієнтів з України.',
   canonicalPath: '/likari/',
-  schema: [MEDHUB_SCHEMA, SHEBA_SCHEMA, BC_LIKARI.schema],
-  mainHtml: `${BC_LIKARI.html}${titleBand('Команда Sheba Medical Center')}
+  schema: [MEDHUB_SCHEMA, SHEBA_SCHEMA, BC_LIKARI.schema, ...CLINICAL_DOCTORS.map(physicianSchema)],
+  mainHtml: `${BC_LIKARI.html}${titleBand('Лікарі Sheba Medical Center')}
 
   <section class="section page-intro">
     <div class="container">
-      <p>Департамент міжнародних пацієнтів Sheba Medical Center супроводжує звернення іноземних пацієнтів — від першого запиту до організації лікування. MEDHUB координує звернення українських пацієнтів саме до цієї команди.</p>
+      <p>У Sheba Medical Center працюють фахівці з широкого спектра медичних напрямів — від онкології, нейрохірургії та кардіології до трансплантації, реабілітації й дитячої медицини. MEDHUB допомагає українським пацієнтам передати медичні документи та організувати звернення до відповідного спеціаліста.</p>
     </div>
   </section>
 
   <section class="section section--tight">
     <div class="container">
+      <div class="physician-filters" role="group" aria-label="Фільтр лікарів за напрямом">
+${PHYSICIAN_FILTERS.map(([key, label], i) => `        <button type="button" class="physician-filter${i === 0 ? ' is-active' : ''}" data-filter="${key}" aria-pressed="${i === 0 ? 'true' : 'false'}">${label}</button>`).join('\n')}
+      </div>
+
+      <div class="physician-grid">
+${CLINICAL_DOCTORS.map((doc) => `        <div class="physician-card" data-specialty="${doc.filterKeys}">
+          <!-- Photo: pending a rights-cleared image from the official Sheba Medical Center profile (${doc.officialUrl}); showing a neutral initials placeholder, not an AI-generated face, until one is sourced. -->
+          <div class="physician-avatar" aria-hidden="true">${doc.initials}</div>
+          <h3>${doc.nameUa}</h3>
+          <span class="physician-name-orig">${doc.nameOrig}</span>
+          <span class="physician-title">${doc.titleUa}</span>
+          <span class="physician-specialty">${doc.specialtyUa}</span>
+          <ul class="physician-tags">
+${doc.tagsUa.map((tag) => `            <li>${tag}</li>`).join('\n')}
+          </ul>
+          ${doc.langsUa ? `<p class="doctor-desc">Мови спілкування: ${doc.langsUa}.</p>` : ''}
+          <div class="physician-actions">
+            <a href="${doc.officialUrl}" class="btn btn-outline btn-sm" target="_blank" rel="noopener noreferrer">Докладніше
+              <span class="btn-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="#2315FF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            </a>
+            <a href="/sheba-ukraine/#contact-form" class="btn btn-pink btn-sm">Отримати консультацію
+              <span class="btn-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            </a>
+          </div>
+          <p class="physician-source-note">Джерело: офіційний профіль Sheba Medical Center</p>
+        </div>`).join('\n')}
+      </div>
+    </div>
+  </section>
+
+  <section class="section support-section section-alt">
+    <div class="container">
+      <h2>Команда міжнародних пацієнтів</h2>
+      <div class="support-body">
+        <p>Після вибору медичного напряму міжнародна команда Sheba допомагає координувати звернення іноземних пацієнтів.</p>
+      </div>
       <div class="doctor-grid">
-${DOCTORS.map(([photo, name, title, langs]) => `        <div class="doctor-card">
+${COORDINATORS.map(([photo, name, title, langs]) => `        <div class="doctor-card">
           <img class="doctor-avatar" src="${photo}" alt="${name}" width="88" height="88" loading="lazy">
           <h3>${name}</h3>
           <span class="doctor-specialty">${title}</span>
@@ -1420,11 +1651,11 @@ ${DOCTORS.map(([photo, name, title, langs]) => `        <div class="doctor-card"
 
 ${ctaBand({
   heading: 'Потрібна допомога',
-  headingAccent: 'з організацією лікування?',
-  text: 'Надішліть медичні документи — MEDHUB передасть звернення команді департаменту міжнародних пацієнтів Sheba Medical Center.',
+  headingAccent: 'з вибором лікаря?',
+  text: 'Надішліть медичні документи — MEDHUB допоможе визначити профільного спеціаліста Sheba Medical Center.',
   emphasis: '',
   primaryLabel: 'Отримати консультацію',
-  primaryHref: '/kontakty/',
+  primaryHref: '/sheba-ukraine/#contact-form',
   secondaryLabel: 'Напрями лікування',
   secondaryHref: '/napriamy-likuvannia/',
   image: '/assets/temp-dev-refs/cta-consultation.jpg',
@@ -2113,8 +2344,12 @@ ${ctaBand({
 });
 
 // ===== EN 5. SHEBA TEAM (real International Patient Department staff) ===
-// Source: https://www.shebaonline.ru/nashi-sotrudniki/ — see the DOCTORS
-// array above for the sourcing note; these are the English equivalents.
+// Source: https://www.shebaonline.ru/nashi-sotrudniki/ — see the
+// COORDINATORS array above for the sourcing note; these are the English
+// equivalents. NOTE: as of the /likari/ rebuild, the uk page now shows real
+// clinical physicians (CLINICAL_DOCTORS) with this coordinator team only as
+// a secondary block — this EN page has NOT been updated to match and is
+// currently out of sync with its uk counterpart (still coordinators-only).
 const DOCTORS_EN = [
   ['/assets/team/mika-amram.jpg', 'Mika Amram', 'Director of the International Patient Department', 'Hebrew, English'],
   ['/assets/team/vered-cohen.jpg', 'Vered Cohen Hershaft', 'Head of the Global Medical Services Department', ''],

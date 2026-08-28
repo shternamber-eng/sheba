@@ -72,6 +72,28 @@
     });
   });
 
+  // /likari/ specialty filter — pure show/hide via the [hidden] attribute;
+  // every physician card is already in the static HTML (server-rendered by
+  // build.js), so search engines see the full catalog regardless of JS.
+  var physicianFilters = document.querySelector('.physician-filters');
+  var physicianCards = document.querySelectorAll('.physician-card');
+  if (physicianFilters && physicianCards.length) {
+    physicianFilters.addEventListener('click', function (event) {
+      var button = event.target.closest('.physician-filter');
+      if (!button) return;
+      physicianFilters.querySelectorAll('.physician-filter').forEach(function (b) {
+        var active = b === button;
+        b.classList.toggle('is-active', active);
+        b.setAttribute('aria-pressed', String(active));
+      });
+      var filter = button.getAttribute('data-filter');
+      physicianCards.forEach(function (card) {
+        var specialties = (card.getAttribute('data-specialty') || '').split(' ');
+        card.hidden = filter !== 'all' && specialties.indexOf(filter) === -1;
+      });
+    });
+  }
+
   // File input hint
   var documentsInput = document.getElementById('documents');
   var fileHint = document.getElementById('file-hint');
