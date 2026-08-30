@@ -7,3 +7,4 @@ wrangler.toml
 .wrangler
 node_modules
 doctor pics
+src

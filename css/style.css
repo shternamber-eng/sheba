@@ -978,6 +978,22 @@ ul, ol {
   font-size: 0.92rem;
 }
 
+.form-status--error {
+  background: #FBE4E4;
+  border-color: #F0BFBF;
+  color: #7A1E1E;
+}
+
+/* Honeypot — off-screen for real visitors (incl. keyboard/screen-reader
+   users via aria-hidden + tabindex="-1"), left as bait for simple bots. */
+.hp-field {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
 /* =========================================================
    Multi-page catalog components (directions, doctors, contacts)
    ========================================================= */

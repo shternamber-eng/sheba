@@ -30,6 +30,7 @@
 
 <link rel="stylesheet" href="/css/style.css">
 
+
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -231,7 +232,7 @@
         <h2>Надіслати медичні документи</h2>
         <p>Опишіть медичне питання та за потреби додайте медичні документи — координатор MEDHUB зв'яжеться з вами.</p>
       </div>
-      <form id="consultation-form" class="consultation-form" novalidate>
+      <form id="consultation-form" class="consultation-form" method="post" action="/api/contact" novalidate>
         <div class="form-row">
           <label for="full-name">Ім'я та прізвище</label>
           <input type="text" id="full-name" name="full-name" autocomplete="name" required>
@@ -260,8 +261,9 @@
 
         <div class="form-row">
           <label for="documents">Завантажити медичні документи</label>
-          <input type="file" id="documents" name="documents" multiple>
+          <input type="file" id="documents" name="documents" accept=".pdf,.jpg,.jpeg,.png,.dcm,.dicom" multiple>
           <p class="field-hint" id="file-hint">Файл не обрано</p>
+          <p class="field-hint">Прийнятні формати: PDF, JPG, PNG, DICOM.</p>
         </div>
 
         <div class="form-row form-row--checkbox">
@@ -269,11 +271,21 @@
           <label for="consent">Я погоджуюся на обробку персональних даних та медичної інформації з метою організації консультації.</label>
         </div>
 
+        <input type="hidden" name="source_page" value="/kontakty/">
+        <input type="hidden" name="form_rendered_at" value="" class="form-rendered-at">
+
+        <div class="hp-field" aria-hidden="true">
+          <label for="hp-website-kontakty">Залиште це поле порожнім</label>
+          <input type="text" id="hp-website-kontakty" name="hp_website" tabindex="-1" autocomplete="off">
+        </div>
+
+        
+
         <button type="submit" class="btn btn-pink btn-plain form-submit">Надіслати запит</button>
 
-        <p class="form-status" id="form-status" role="status" aria-live="polite" hidden>
-          Дякуємо. Ваш запит отримано командою MEDHUB. Наш координатор зв'яжеться з вами.
-        </p>
+        <p class="form-status form-status--success" id="form-status-success" role="status" aria-live="polite" hidden>Дякуємо. Ваш запит і медичні документи надіслано команді MEDHUB. Наш координатор зв'яжеться з вами.</p>
+        <p class="form-status form-status--success" id="form-status-partial" role="status" aria-live="polite" hidden>Дякуємо. Ваш запит надіслано команді MEDHUB. Деякі файли перевищують ліміт розміру або формату — надішліть їх іншим способом (WhatsApp, email) або зверніться до координатора.</p>
+        <p class="form-status form-status--error" id="form-status-error" role="alert" aria-live="assertive" hidden>Не вдалося надіслати запит. Будь ласка, спробуйте ще раз або зв'яжіться з MEDHUB телефоном чи через WhatsApp.</p>
       </form>
     </div>
   </section>

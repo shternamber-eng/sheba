@@ -1,7 +1,15 @@
 name = "sheba"
+main = "src/worker.js"
 compatibility_date = "2026-01-01"
+compatibility_flags = ["nodejs_compat"]
 
 [assets]
 directory = "./"
+binding = "ASSETS"
 html_handling = "auto-trailing-slash"
 not_found_handling = "404-page"
+
+# Secrets (set via `npx wrangler secret put <NAME>`, never written here):
+#   RESEND_API_KEY      - required, from resend.com dashboard
+#   TURNSTILE_SECRET_KEY - optional; if unset, falls back to a honeypot +
+#                          basic rate limit instead of Turnstile verification

@@ -111,12 +111,30 @@
     });
   }
 
-  // Consultation form — demo mode (no backend connected yet).
-  // Replace this handler with a real API/email/CRM integration.
+  // Consultation form — real submission to the Worker's /api/contact
+  // endpoint. Success is shown only after the backend confirms it (2xx AND
+  // a non-"error" status in the JSON body) — never optimistically.
   var form = document.getElementById('consultation-form');
-  var status = document.getElementById('form-status');
+  var statusSuccess = document.getElementById('form-status-success');
+  var statusPartial = document.getElementById('form-status-partial');
+  var statusError = document.getElementById('form-status-error');
 
-  if (form && status) {
+  if (form && statusSuccess && statusPartial && statusError) {
+    var renderedAtField = form.querySelector('.form-rendered-at');
+    if (renderedAtField) {
+      renderedAtField.value = String(Date.now());
+    }
+
+    var submitBtn = form.querySelector('.form-submit');
+
+    function showStatus(el) {
+      statusSuccess.hidden = el !== statusSuccess;
+      statusPartial.hidden = el !== statusPartial;
+      statusError.hidden = el !== statusError;
+      el.hidden = false;
+      el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
     form.addEventListener('submit', function (event) {
       event.preventDefault();
 
@@ -125,12 +143,29 @@
         return;
       }
 
-      form.querySelectorAll('input, textarea, button').forEach(function (el) {
-        el.disabled = true;
-      });
+      if (submitBtn) submitBtn.disabled = true;
 
-      status.hidden = false;
-      status.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      fetch('/api/contact', { method: 'POST', body: new FormData(form) })
+        .then(function (response) {
+          return response.json().catch(function () { return {}; }).then(function (data) {
+            return { ok: response.ok, data: data };
+          });
+        })
+        .then(function (result) {
+          if (result.ok && result.data.status !== 'error') {
+            form.querySelectorAll('input, textarea, button').forEach(function (el) {
+              el.disabled = true;
+            });
+            showStatus(result.data.status === 'ok_partial' ? statusPartial : statusSuccess);
+          } else {
+            if (submitBtn) submitBtn.disabled = false;
+            showStatus(statusError);
+          }
+        })
+        .catch(function () {
+          if (submitBtn) submitBtn.disabled = false;
+          showStatus(statusError);
+        });
     });
   }
 

@@ -332,23 +332,40 @@ ${en ? '' : '        <li><a href="/diagnostyka/">Діагностика</a></li>
 </footer>`;
 }
 
-function renderConsultationForm(lang = 'uk') {
+// Cloudflare Turnstile site key (public, safe to embed in HTML — unlike the
+// secret key, which lives only in the Worker's TURNSTILE_SECRET_KEY secret).
+// Leave empty until a widget is created in the Cloudflare dashboard for this
+// site; the form and the Worker both degrade gracefully to a honeypot +
+// minimum-fill-time check when it's unset.
+const TURNSTILE_SITE_KEY = '';
+
+function renderConsultationForm(lang = 'uk', sourcePage = '/kontakty/') {
   const en = lang === 'en';
   const t = en
     ? {
         fullName: 'Full name', phone: 'Phone', email: 'Email', country: 'Country',
         message: 'Brief description of your medical question', documents: 'Upload medical documents', fileHint: 'No file chosen',
+        fileFormats: 'Accepted formats: PDF, JPG, PNG, DICOM.',
         consent: 'I agree to the processing of personal data and medical information for the purpose of arranging a consultation.',
-        submit: 'Send Request', thanks: "Thank you. Your request has been received by the MEDHUB team. Our coordinator will contact you.",
+        submit: 'Send Request',
+        thanks: "Thank you. Your request and medical documents have been sent to the MEDHUB team. Our coordinator will contact you.",
+        thanksPartial: "Thank you. Your request has been sent to the MEDHUB team. Some files exceeded the size or format limit — please send them another way (WhatsApp, email) or contact your coordinator.",
+        error: "We couldn't send your request. Please try again, or contact MEDHUB by phone or WhatsApp.",
+        hpLabel: 'Leave this field empty',
       }
     : {
         fullName: "Ім'я та прізвище", phone: 'Телефон', email: 'Email', country: 'Країна',
         message: 'Короткий опис медичного питання', documents: 'Завантажити медичні документи', fileHint: 'Файл не обрано',
+        fileFormats: 'Прийнятні формати: PDF, JPG, PNG, DICOM.',
         consent: 'Я погоджуюся на обробку персональних даних та медичної інформації з метою організації консультації.',
-        submit: 'Надіслати запит', thanks: "Дякуємо. Ваш запит отримано командою MEDHUB. Наш координатор зв'яжеться з вами.",
+        submit: 'Надіслати запит',
+        thanks: "Дякуємо. Ваш запит і медичні документи надіслано команді MEDHUB. Наш координатор зв'яжеться з вами.",
+        thanksPartial: "Дякуємо. Ваш запит надіслано команді MEDHUB. Деякі файли перевищують ліміт розміру або формату — надішліть їх іншим способом (WhatsApp, email) або зверніться до координатора.",
+        error: "Не вдалося надіслати запит. Будь ласка, спробуйте ще раз або зв'яжіться з MEDHUB телефоном чи через WhatsApp.",
+        hpLabel: 'Залиште це поле порожнім',
       };
 
-  return `      <form id="consultation-form" class="consultation-form" novalidate>
+  return `      <form id="consultation-form" class="consultation-form" method="post" action="/api/contact" novalidate>
         <div class="form-row">
           <label for="full-name">${t.fullName}</label>
           <input type="text" id="full-name" name="full-name" autocomplete="name" required>
@@ -377,8 +394,9 @@ function renderConsultationForm(lang = 'uk') {
 
         <div class="form-row">
           <label for="documents">${t.documents}</label>
-          <input type="file" id="documents" name="documents" multiple>
+          <input type="file" id="documents" name="documents" accept=".pdf,.jpg,.jpeg,.png,.dcm,.dicom" multiple>
           <p class="field-hint" id="file-hint">${t.fileHint}</p>
+          <p class="field-hint">${t.fileFormats}</p>
         </div>
 
         <div class="form-row form-row--checkbox">
@@ -386,11 +404,21 @@ function renderConsultationForm(lang = 'uk') {
           <label for="consent">${t.consent}</label>
         </div>
 
+        <input type="hidden" name="source_page" value="${sourcePage}">
+        <input type="hidden" name="form_rendered_at" value="" class="form-rendered-at">
+
+        <div class="hp-field" aria-hidden="true">
+          <label for="hp-website-${sourcePage.replace(/[^a-z0-9]/gi, '')}">${t.hpLabel}</label>
+          <input type="text" id="hp-website-${sourcePage.replace(/[^a-z0-9]/gi, '')}" name="hp_website" tabindex="-1" autocomplete="off">
+        </div>
+
+        ${TURNSTILE_SITE_KEY ? `<div class="cf-turnstile" data-sitekey="${TURNSTILE_SITE_KEY}"></div>` : ''}
+
         <button type="submit" class="btn btn-pink btn-plain form-submit">${t.submit}</button>
 
-        <p class="form-status" id="form-status" role="status" aria-live="polite" hidden>
-          ${t.thanks}
-        </p>
+        <p class="form-status form-status--success" id="form-status-success" role="status" aria-live="polite" hidden>${t.thanks}</p>
+        <p class="form-status form-status--success" id="form-status-partial" role="status" aria-live="polite" hidden>${t.thanksPartial}</p>
+        <p class="form-status form-status--error" id="form-status-error" role="alert" aria-live="assertive" hidden>${t.error}</p>
       </form>`;
 }
 
@@ -437,6 +465,7 @@ ${hreflangLinks}
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
 <link rel="stylesheet" href="/css/style.css">
+${TURNSTILE_SITE_KEY ? '<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>' : ''}
 
 ${(Array.isArray(schema) ? schema : [schema]).map((s) => `<script type="application/ld+json">\n${JSON.stringify(s, null, 2)}\n</script>`).join('\n')}
 </head>
@@ -1105,7 +1134,7 @@ ${SHEBA_UA_FAQ.map(([q, a]) => `        <div class="faq-item">
         <h2>Надіслати медичні документи</h2>
         <p>Опишіть медичне питання та додайте наявні медичні документи — координатор MEDHUB передасть звернення до Sheba Medical Center.</p>
       </div>
-${renderConsultationForm()}
+${renderConsultationForm('uk', '/sheba-ukraine/')}
     </div>
   </section>
 
@@ -1990,7 +2019,7 @@ pages.push({
         <h2>Надіслати медичні документи</h2>
         <p>Опишіть медичне питання та за потреби додайте медичні документи — координатор MEDHUB зв'яжеться з вами.</p>
       </div>
-${renderConsultationForm()}
+${renderConsultationForm('uk', '/kontakty/')}
     </div>
   </section>
 `,
@@ -2555,7 +2584,7 @@ pages.push({
         <h2>Send Medical Documents</h2>
         <p>Describe your medical question and, if needed, attach medical documents — a MEDHUB coordinator will contact you.</p>
       </div>
-${renderConsultationForm('en')}
+${renderConsultationForm('en', '/en/contacts/')}
     </div>
   </section>
 `,
