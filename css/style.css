@@ -408,9 +408,11 @@ ul, ol {
 }
 
 .main-nav a {
-  display: block;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
   position: relative;
-  padding: 15px 18px;
+  padding: 10px 18px;
   color: var(--color-navy);
   font-size: 0.98rem;
   font-weight: 600;
@@ -419,6 +421,14 @@ ul, ol {
 .main-nav a:hover {
   text-decoration: none;
   opacity: 0.75;
+}
+
+.nav-subtitle {
+  display: block;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--color-pink);
+  margin-top: 1px;
 }
 
 .main-nav li.is-current a {

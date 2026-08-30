@@ -59,7 +59,7 @@ const NAV = [
     ],
   },
   { slug: 'likari', href: '/likari/', label: 'Лікарі' },
-  { slug: 'suprovid-patsiientiv', href: '/suprovid-patsiientiv/', label: 'Допомога пацієнтам' },
+  { slug: 'suprovid-patsiientiv', href: '/suprovid-patsiientiv/', label: 'Допомога пацієнтам', subtitle: 'Супровід 360°' },
   { slug: 'sheba-ukraine', href: '/sheba-ukraine/', label: 'Sheba в Україні' },
   { slug: 'kontakty', href: '/kontakty/', label: 'Контакти' },
 ];
@@ -89,7 +89,10 @@ const PAGE_FAMILIES = {
 function navItemHtml(item, activeSlug, mobile) {
   if (!item.children) {
     const current = item.slug === activeSlug;
-    return `        <li${current ? ' class="is-current"' : ''}><a href="${item.href}"${current ? ' aria-current="page"' : ''}>${item.label}</a></li>`;
+    const labelHtml = item.subtitle
+      ? `${item.label}<span class="nav-subtitle">${item.subtitle}</span>`
+      : item.label;
+    return `        <li${current ? ' class="is-current"' : ''}><a href="${item.href}"${current ? ' aria-current="page"' : ''}>${labelHtml}</a></li>`;
   }
   const childActive = item.children.some((c) => c.slug === activeSlug);
   const children = item.children.map((c) => {
@@ -1657,7 +1660,7 @@ ${doc.tagsUa.map((tag) => `            <li>${tag}</li>`).join('\n')}
     </div>
   </section>
 
-  <section class="section support-section section-alt">
+  <section class="section support-section section-alt" id="mizhnarodna-komanda">
     <div class="container">
       <h2>Команда міжнародних пацієнтів</h2>
       <div class="support-body">
@@ -1785,57 +1788,33 @@ const BC_SUPROVID = crumbs([['Головна', '/'], ['Допомога паці
 pages.push({
   slug: 'suprovid-patsiientiv',
   outPath: 'suprovid-patsiientiv/index.html',
-  title: 'Супровід пацієнтів під час лікування в Sheba | MEDHUB',
-  description: 'MEDHUB допомагає українським пацієнтам організувати звернення до Sheba Medical Center: медичні документи, консультації, координатор, переклад, організація поїздки та супровід під час лікування в Ізраїлі.',
+  title: 'Допомога пацієнтам 360° | MEDHUB',
+  description: 'MEDHUB 360° — повний супровід пацієнта: документи та медична оцінка, індивідуальна програма, особистий координатор, переклад, організація поїздки, лікування та зв\'язок після повернення в Україну.',
   canonicalPath: '/suprovid-patsiientiv/',
   schema: [MEDHUB_SCHEMA, SHEBA_SCHEMA, BC_SUPROVID.schema],
-  mainHtml: `${BC_SUPROVID.html}${titleBand('Допомога пацієнтам на всіх етапах лікування')}
+  mainHtml: `${BC_SUPROVID.html}${titleBand('Допомога пацієнтам 360°')}
 
   <section class="section page-intro">
     <div class="container">
-      <p>Від першого звернення в Україні до консультації, діагностики та лікування в Sheba Medical Center — MEDHUB допомагає організувати процес і координує взаємодію пацієнта з медичним центром.</p>
-    </div>
-  </section>
-
-  <section class="section section--tight">
-    <div class="container">
-      <ol class="steps-list">
-        <li><span class="steps-number">1</span><div><h3>Звернення до MEDHUB</h3><p>Пацієнт або родина звертається до MEDHUB в Україні — телефоном, WhatsApp або через форму на сайті.</p></div></li>
-        <li><span class="steps-number">2</span><div><h3>Передача медичних документів</h3><p>MEDHUB приймає наявні виписки, дослідження та знімки і передає їх профільному підрозділу Sheba.</p></div></li>
-        <li><span class="steps-number">3</span><div><h3>Медична оцінка у Sheba</h3><p>Фахівці Sheba Medical Center аналізують документи та визначають медичну доцільність консультації чи лікування.</p></div></li>
-        <li><span class="steps-number">4</span><div><h3>Вибір спеціаліста</h3><p>Sheba визначає профільного лікаря або відділення, яке відповідатиме за випадок пацієнта.</p></div></li>
-        <li><span class="steps-number">5</span><div><h3>Попередня програма візиту</h3><p>Формується орієнтовний план консультацій, досліджень і можливого лікування.</p></div></li>
-        <li><span class="steps-number">6</span><div><h3>Організація поїздки</h3><p>MEDHUB допомагає узгодити дати, зібрати документи та підготуватися до візиту в Ізраїль.</p></div></li>
-        <li><span class="steps-number">7</span><div><h3>Консультації, діагностика й лікування в Sheba</h3><p>Усі медичні послуги пацієнт отримує безпосередньо в Sheba Medical Center.</p></div></li>
-        <li><span class="steps-number">8</span><div><h3>Подальша комунікація після повернення</h3><p>MEDHUB підтримує зв'язок щодо контрольних консультацій і наступних кроків лікування.</p></div></li>
-      </ol>
+      <p>Повний супровід — від першого звернення та медичної оцінки до лікування в Sheba Medical Center і подальшої комунікації після повернення додому.</p>
+      <p>Ми називаємо цей підхід <strong>MEDHUB 360°</strong> — супровід пацієнта на кожному етапі: до поїздки, під час лікування в Sheba Medical Center та після повернення в Україну.</p>
     </div>
   </section>
 
   <section class="section support-section section-alt">
     <div class="container">
-      <h2>До приїзду в Ізраїль</h2>
+      <span class="eyebrow">01</span>
+      <h2>До поїздки</h2>
       <div class="support-body">
         <p>Ще до поїздки MEDHUB структурує звернення пацієнта та готує його до розгляду фахівцями Sheba Medical Center:</p>
         <p>
           <span>приймає та впорядковує медичні документи пацієнта;</span>
           <span>передає матеріали профільному підрозділу Sheba Medical Center;</span>
           <span>допомагає визначити відповідний підрозділ або спеціаліста;</span>
-          <span>супроводжує процес попередньої медичної оцінки фахівцями Sheba;</span>
-          <span>узгоджує з Sheba необхідні додаткові дослідження, якщо це потрібно;</span>
-          <span>отримує від Sheba орієнтовну програму візиту;</span>
-          <span>узгоджує дати візиту з пацієнтом.</span>
+          <span>супроводжує процес попередньої медичної оцінки фахівцями Sheba.</span>
         </p>
+        <p>Ще до приїзду в Ізраїль фахівцям Sheba можуть бути передані наявні медичні матеріали — виписки, результати лабораторних досліджень, знімки МРТ, КТ чи PET-CT, гістологічні висновки та попередні медичні висновки. Це дозволяє скласти попереднє уявлення про випадок ще до особистої консультації.</p>
         <p>Медичну оцінку, необхідні дослідження та програму лікування визначає виключно Sheba Medical Center — MEDHUB координує процес і комунікацію.</p>
-      </div>
-    </div>
-  </section>
-
-  <section class="section support-section">
-    <div class="container">
-      <h2>Медична оцінка ще до поїздки</h2>
-      <div class="support-body">
-        <p>Ще до приїзду в Ізраїль фахівцям Sheba Medical Center можуть бути передані наявні медичні матеріали — виписки, результати лабораторних досліджень, знімки МРТ, КТ чи PET-CT, гістологічні висновки та попередні медичні висновки. Це дозволяє скласти попереднє уявлення про випадок ще до особистої консультації.</p>
       </div>
       <a href="/kontakty/#contact-form" class="btn btn-pink">Надіслати медичні документи
         <span class="btn-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
@@ -1843,9 +1822,23 @@ pages.push({
     </div>
   </section>
 
+  <section class="section support-section">
+    <div class="container">
+      <span class="eyebrow">02</span>
+      <h2>Індивідуальна програма</h2>
+      <div class="support-body">
+        <p>На основі медичних документів і попередньої оцінки фахівці Sheba Medical Center формують програму, адаптовану під конкретний випадок пацієнта, — перелік консультацій, необхідних досліджень і, за потреби, попередній план лікування. Це не типовий пакет послуг, а програма під конкретне медичне питання.</p>
+      </div>
+    </div>
+  </section>
+
   <section class="section support-section section-alt">
     <div class="container">
-      <h2>Координація пацієнта</h2>
+      <span class="eyebrow">03</span>
+      <h2>Особистий координатор</h2>
+      <div class="support-body">
+        <p>У пацієнта є два постійні контакти протягом усього процесу — координатор MEDHUB в Україні та міжнародна команда пацієнтів Sheba в Ізраїлі:</p>
+      </div>
       <div class="responsibility-grid">
         <div class="responsibility-item">
           <h3>MEDHUB в Україні</h3>
@@ -1867,12 +1860,14 @@ pages.push({
           </ul>
         </div>
       </div>
+      <p><a href="/likari/#mizhnarodna-komanda" class="text-link">Команда міжнародних пацієнтів Sheba →</a></p>
     </div>
   </section>
 
   <section class="section support-section">
     <div class="container">
-      <h2>Переклад і зрозуміла комунікація</h2>
+      <span class="eyebrow">04</span>
+      <h2>Переклад і комунікація</h2>
       <div class="support-body">
         <p>За необхідності під час організації лікування може бути передбачена мовна підтримка, щоб пацієнт розумів медичні рекомендації та організаційні питання.</p>
       </div>
@@ -1881,7 +1876,8 @@ pages.push({
 
   <section class="section support-section section-alt">
     <div class="container">
-      <h2>Організація візиту до Ізраїлю</h2>
+      <span class="eyebrow">05</span>
+      <h2>Організація поїздки</h2>
       <div class="support-body">
         <p>MEDHUB допомагає пацієнту підготуватися до поїздки:</p>
         <p>
@@ -1897,7 +1893,8 @@ pages.push({
 
   <section class="section support-section">
     <div class="container">
-      <h2>Під час лікування в Sheba Medical Center</h2>
+      <span class="eyebrow">06</span>
+      <h2>Лікування та реабілітація</h2>
       <div class="support-body">
         <p>
           <span>консультації;</span>
@@ -1909,31 +1906,23 @@ pages.push({
           <span>ведення медичної документації;</span>
           <span>координація між підрозділами центру.</span>
         </p>
-        <p>Усі медичні послуги на цьому етапі надає виключно Sheba Medical Center.</p>
-      </div>
-    </div>
-  </section>
-
-  <section class="section support-section section-alt">
-    <div class="container">
-      <h2>Реабілітація в Sheba Medical Center</h2>
-      <div class="support-body">
-        <p>За потреби лікування може включати реабілітаційний етап у Sheba Medical Center — після хірургічних втручань, інсульту чи інших травм.</p>
+        <p>За потреби лікування може включати реабілітаційний етап у Sheba Medical Center — після хірургічних втручань, інсульту чи інших травм. Усі медичні послуги на цьому етапі надає виключно Sheba Medical Center.</p>
       </div>
       <a href="/napriamy-likuvannia/reabilitatsiya/" class="text-link">Детальніше про реабілітацію →</a>
     </div>
   </section>
 
-  <section class="section support-section">
+  <section class="section support-section section-alt">
     <div class="container">
-      <h2>Після повернення в Україну</h2>
+      <span class="eyebrow">07</span>
+      <h2>Після повернення</h2>
       <div class="support-body">
         <p>Після завершення лікування пацієнт отримує медичні документи та рекомендації. За необхідності MEDHUB допомагає підтримувати подальшу комунікацію з Sheba щодо контрольної консультації, додаткового обстеження або наступного етапу лікування.</p>
       </div>
     </div>
   </section>
 
-  <section class="section support-section section-alt">
+  <section class="section support-section">
     <div class="container">
       <h2>Пов'язані сторінки</h2>
       <div class="support-body">
