@@ -120,11 +120,6 @@
   var statusError = document.getElementById('form-status-error');
 
   if (form && statusSuccess && statusPartial && statusError) {
-    var renderedAtField = form.querySelector('.form-rendered-at');
-    if (renderedAtField) {
-      renderedAtField.value = String(Date.now());
-    }
-
     var submitBtn = form.querySelector('.form-submit');
 
     function showStatus(el) {

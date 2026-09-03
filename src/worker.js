@@ -9,8 +9,9 @@
  *   RESEND_FROM           - defaults to a Resend sandbox sender until the
  *                           medhub.group domain is verified in Resend; set
  *                           to 'MEDHUB <forms@medhub.group>' once it is.
- *   TURNSTILE_SECRET_KEY  - if unset, falls back to a honeypot field +
- *                           minimum-fill-time check (see verifyNotSpam).
+ *   TURNSTILE_SECRET_KEY  - if unset, falls back to a honeypot field alone
+ *                           (see verifyNotSpam) — never a timing heuristic,
+ *                           which false-positived on real visitors.
  *
  * Notes on what this does NOT do, by design:
  *   - Never logs medical-document content or the message body — only
@@ -32,8 +33,6 @@ const ALLOWED_EXTENSIONS = {
   '.dcm': 'application/dicom',
   '.dicom': 'application/dicom',
 };
-const MIN_FILL_TIME_MS = 3000; // honeypot fallback: reject submits faster than a human could plausibly fill the form
-
 export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
@@ -72,7 +71,6 @@ async function handleContact(request, env) {
   const consent = field('consent');
   const sourcePage = field('source_page') || '/kontakty/';
   const honeypot = field('hp_website');
-  const renderedAt = Number(field('form_rendered_at')) || 0;
   const turnstileToken = field('cf-turnstile-response');
 
   // Honeypot tripped: pretend success so the bot doesn't learn to adapt,
@@ -85,7 +83,7 @@ async function handleContact(request, env) {
     return jsonResponse({ status: 'error', message: 'Missing required fields' }, 400);
   }
 
-  const spamCheck = await verifyNotSpam({ env, turnstileToken, renderedAt, ip: request.headers.get('CF-Connecting-IP') });
+  const spamCheck = await verifyNotSpam({ env, turnstileToken, ip: request.headers.get('CF-Connecting-IP') });
   if (!spamCheck.ok) {
     return jsonResponse({ status: 'error', message: spamCheck.reason }, 400);
   }
@@ -129,7 +127,7 @@ async function handleContact(request, env) {
   return jsonResponse({ status: anyRejected ? 'ok_partial' : 'ok' }, 200);
 }
 
-async function verifyNotSpam({ env, turnstileToken, renderedAt, ip }) {
+async function verifyNotSpam({ env, turnstileToken, ip }) {
   if (env.TURNSTILE_SECRET_KEY) {
     if (!turnstileToken) {
       return { ok: false, reason: 'Spam check missing' };
@@ -143,12 +141,13 @@ async function verifyNotSpam({ env, turnstileToken, renderedAt, ip }) {
     return verifyData.success ? { ok: true } : { ok: false, reason: 'Spam check failed' };
   }
 
-  // Fallback while Turnstile isn't configured: reject submissions faster
-  // than a human could plausibly fill the form (form_rendered_at is set
-  // client-side on page load, see js/main.js).
-  if (renderedAt && Date.now() - renderedAt < MIN_FILL_TIME_MS) {
-    return { ok: false, reason: 'Submitted too quickly' };
-  }
+  // Fallback while Turnstile isn't configured: the honeypot field (checked
+  // by the caller before this function even runs) is the only hard block.
+  // A minimum-fill-time check used to run here too, but 3s of "must wait"
+  // false-positived on real visitors — autofill, a form filled from a
+  // second monitor, or just a fast typist — and rejected real inquiries
+  // with a genuine 400. Never block a human to maybe catch a bot; wait for
+  // Turnstile instead of guessing at a "safe" delay.
   return { ok: true };
 }
 

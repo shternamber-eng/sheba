@@ -408,7 +408,6 @@ function renderConsultationForm(lang = 'uk', sourcePage = '/kontakty/') {
         </div>
 
         <input type="hidden" name="source_page" value="${sourcePage}">
-        <input type="hidden" name="form_rendered_at" value="" class="form-rendered-at">
 
         <div class="hp-field" aria-hidden="true">
           <label for="hp-website-${sourcePage.replace(/[^a-z0-9]/gi, '')}">${t.hpLabel}</label>
