@@ -67,6 +67,8 @@ async function handleContact(request, env) {
   const phone = field('phone');
   const email = field('email');
   const country = field('country');
+  // Optional — only the /menopauza/ forms send it.
+  const topic = field('topic');
   const message = field('message');
   const consent = field('consent');
   const sourcePage = field('source_page') || '/kontakty/';
@@ -101,8 +103,8 @@ async function handleContact(request, env) {
     to: [RECIPIENT],
     reply_to: email,
     subject: `MEDHUB — нове звернення: ${fullName}`,
-    html: buildHtmlEmail({ fullName, phone, email, country, message, sourcePage, submittedAt, attachments, anyRejected }),
-    text: buildTextEmail({ fullName, phone, email, country, message, sourcePage, submittedAt, attachments, anyRejected }),
+    html: buildHtmlEmail({ fullName, phone, email, country, topic, message, sourcePage, submittedAt, attachments, anyRejected }),
+    text: buildTextEmail({ fullName, phone, email, country, topic, message, sourcePage, submittedAt, attachments, anyRejected }),
   };
   if (attachments.length) {
     emailPayload.attachments = attachments.map((a) => ({ filename: a.filename, content: a.content, content_type: a.contentType }));
@@ -205,7 +207,7 @@ function escapeHtml(value) {
     .replace(/'/g, '&#39;');
 }
 
-function buildHtmlEmail({ fullName, phone, email, country, message, sourcePage, submittedAt, attachments, anyRejected }) {
+function buildHtmlEmail({ fullName, phone, email, country, topic, message, sourcePage, submittedAt, attachments, anyRejected }) {
   const filesLine = attachments.length
     ? attachments.map((a) => escapeHtml(a.filename)).join(', ')
     : (anyRejected ? 'Немає (файли відхилено за форматом/розміром — див. нижче)' : 'Немає');
@@ -229,6 +231,7 @@ function buildHtmlEmail({ fullName, phone, email, country, message, sourcePage, 
             <tr><td style="padding:6px 0;color:#6b7280;vertical-align:top;">Телефон:</td><td style="padding:6px 0;"><a href="tel:${escapeHtml(phone)}" style="color:#2315FF;">${escapeHtml(phone)}</a></td></tr>
             <tr><td style="padding:6px 0;color:#6b7280;vertical-align:top;">Email:</td><td style="padding:6px 0;"><a href="mailto:${escapeHtml(email)}" style="color:#2315FF;">${escapeHtml(email)}</a></td></tr>
             <tr><td style="padding:6px 0;color:#6b7280;vertical-align:top;">Країна:</td><td style="padding:6px 0;">${escapeHtml(country)}</td></tr>
+            ${topic ? `<tr><td style="padding:6px 0;color:#6b7280;vertical-align:top;">Тема:</td><td style="padding:6px 0;">${escapeHtml(topic)}</td></tr>` : ''}
           </table>
           <h3 style="margin:24px 0 8px;color:#0000C1;font-size:15px;">Медичне питання</h3>
           <p style="margin:0;white-space:pre-wrap;font-size:14px;">${message ? escapeHtml(message) : '—'}</p>
@@ -246,7 +249,7 @@ function buildHtmlEmail({ fullName, phone, email, country, message, sourcePage, 
 </html>`;
 }
 
-function buildTextEmail({ fullName, phone, email, country, message, sourcePage, submittedAt, attachments, anyRejected }) {
+function buildTextEmail({ fullName, phone, email, country, topic, message, sourcePage, submittedAt, attachments, anyRejected }) {
   const filesLine = attachments.length
     ? attachments.map((a) => a.filename).join(', ')
     : (anyRejected ? 'Немає (файли відхилено за форматом/розміром)' : 'Немає');
@@ -256,7 +259,8 @@ function buildTextEmail({ fullName, phone, email, country, message, sourcePage, 
 Ім'я: ${fullName}
 Телефон: ${phone}
 Email: ${email}
-Країна: ${country}
+Країна: ${country}${topic ? `
+Тема: ${topic}` : ''}
 
 Медичне питання:
 ${message || '—'}

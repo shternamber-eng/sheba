@@ -2246,3 +2246,425 @@ ul, ol {
     align-items: flex-start;
   }
 }
+
+/* =========================================================
+   Menopause & women's health 40+ (/menopauza/, /en/menopause/)
+   Page-scoped additions only — everything else on these pages
+   reuses the shared components above.
+   ========================================================= */
+
+/* Anchor targets clear the sticky header — offsets match the measured
+   header height at each breakpoint (desktop ~216px, tablet ~84px,
+   mobile ~101px) plus a little breathing room. */
+.mh-meno [id] {
+  scroll-margin-top: 232px;
+}
+
+.mh-meno a:focus-visible,
+.mh-meno button:focus-visible,
+.mh-meno select:focus-visible {
+  outline: 3px solid var(--medhub-bright);
+  outline-offset: 3px;
+}
+
+.mh-meno .btn-outline .btn-icon {
+  background: rgba(35, 21, 255, 0.1);
+}
+
+.page-intro .mh-meno-subtitle {
+  font-size: 1.3rem;
+  font-weight: 600;
+  line-height: 1.35;
+  color: var(--color-navy);
+  margin-bottom: 20px;
+}
+
+.mh-meno-intro p {
+  line-height: 1.6;
+  max-width: 72ch;
+}
+
+.mh-meno-intro .hero-actions {
+  margin-top: 28px;
+}
+
+/* Topics — editorial numbered list, not cards */
+
+.mh-meno-topics {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  column-gap: 40px;
+  margin-top: 28px;
+  counter-reset: mh-meno-topic;
+}
+
+.mh-meno-topics li {
+  counter-increment: mh-meno-topic;
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  padding: 16px 0;
+  border-top: 1px solid rgba(0, 0, 193, 0.14);
+  color: var(--color-text);
+  font-size: 1.05rem;
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+.mh-meno-topics li::before {
+  content: counter(mh-meno-topic, decimal-leading-zero);
+  flex-shrink: 0;
+  min-width: 1.7em;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--medhub-blue);
+}
+
+/* Article cards (reuse .directions-grid / .direction-card) */
+
+.mh-meno-article {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.mh-meno-article h3 {
+  margin-bottom: 0;
+  line-height: 1.35;
+}
+
+.mh-meno-article-num {
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--medhub-blue);
+}
+
+.mh-meno-article-status {
+  margin-top: auto;
+  padding-top: 8px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--color-text-muted);
+}
+
+.mh-meno-article-status--link {
+  font-size: 0.95rem;
+  font-weight: 700;
+  text-transform: none;
+  letter-spacing: 0;
+  color: var(--color-pink);
+}
+
+/* Not a link yet — no hover affordance. */
+.mh-meno-article.is-soon:hover {
+  background: var(--color-white);
+}
+
+/* Specialists */
+
+.mh-meno-doctors {
+  border-top: 1px solid var(--color-border);
+}
+
+.mh-meno-doctors .support-body p {
+  line-height: 1.6;
+}
+
+.mh-meno-placeholder.info-note {
+  margin: 8px 0 28px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--color-navy);
+}
+
+/* Consultation */
+
+.mh-meno .form-intro p {
+  line-height: 1.6;
+}
+
+.mh-meno .form-intro .mh-meno-note {
+  margin-top: 24px;
+  padding-left: 14px;
+  border-left: 3px solid var(--medhub-bright);
+  font-size: 0.92rem;
+  line-height: 1.55;
+}
+
+/* The shared form has had no <select> until now; style it like its inputs. */
+.form-row select {
+  width: 100%;
+  padding: 12px 16px;
+  font-family: var(--font-family);
+  font-size: 0.95rem;
+  color: var(--color-text);
+  background: var(--color-white);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+}
+
+.form-row select:focus {
+  outline: 2px solid var(--color-teal);
+  outline-offset: 1px;
+}
+
+/* Disclaimer */
+
+.mh-meno-disclaimer {
+  padding: 40px 0 64px;
+}
+
+.mh-meno-disclaimer .info-note {
+  max-width: 80ch;
+  margin: 0;
+  font-size: 0.92rem;
+  line-height: 1.55;
+}
+
+@media (max-width: 1024px) {
+  .mh-meno [id] {
+    scroll-margin-top: 100px;
+  }
+
+  .mh-meno-topics {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 767px) {
+  .mh-meno [id] {
+    scroll-margin-top: 117px;
+  }
+
+  .mh-meno-topics {
+    grid-template-columns: 1fr;
+  }
+
+  .page-intro .mh-meno-subtitle {
+    font-size: 1.15rem;
+  }
+}
+
+/* Menopause — editorial "why this matters" block */
+
+.mh-meno-sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.mh-meno-why {
+  border-top: 1px solid var(--color-border);
+}
+
+.mh-meno-why h2 {
+  max-width: 30ch;
+  margin-bottom: 28px;
+}
+
+.mh-meno-why-lead p {
+  max-width: 68ch;
+  font-size: 1.05rem;
+  line-height: 1.65;
+}
+
+.mh-meno-facts {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  margin-top: 48px;
+  border-top: 2px solid var(--color-navy);
+}
+
+.mh-meno-fact {
+  min-width: 0;
+  padding: 28px 28px 8px;
+  border-left: 1px solid var(--color-border);
+}
+
+.mh-meno-fact:first-child {
+  padding-left: 0;
+  border-left: 0;
+}
+
+.mh-meno-fact:last-child {
+  padding-right: 0;
+}
+
+.mh-meno-fact-title {
+  margin-bottom: 16px;
+}
+
+.mh-meno-fact-figure {
+  display: block;
+  margin-bottom: 10px;
+  font-size: 3rem;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  white-space: nowrap;
+  color: var(--medhub-blue);
+}
+
+.mh-meno-fact-caption {
+  display: block;
+  font-size: 1rem;
+  line-height: 1.35;
+  color: var(--color-navy);
+}
+
+.mh-meno-fact p {
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+.mh-meno-fact .mh-meno-fact-source {
+  margin-top: 16px;
+  padding-top: 12px;
+  border-top: 1px solid var(--color-border);
+  font-size: 0.8rem;
+  line-height: 1.45;
+}
+
+.mh-meno-fact-source a,
+.mh-meno-sources a {
+  color: var(--color-navy);
+  text-decoration: underline;
+  text-decoration-color: rgba(0, 0, 193, 0.3);
+  text-underline-offset: 2px;
+  overflow-wrap: anywhere;
+}
+
+.mh-meno-fact-source a:hover,
+.mh-meno-sources a:hover {
+  text-decoration-color: currentColor;
+}
+
+.mh-meno-why-closing {
+  max-width: 72ch;
+  margin-top: 56px;
+  padding-top: 40px;
+  border-top: 1px solid var(--color-border);
+}
+
+.mh-meno-why-closing h3 {
+  margin-bottom: 18px;
+  font-size: 1.6rem;
+  color: var(--color-navy);
+}
+
+.mh-meno-why-closing p {
+  font-size: 1.05rem;
+  line-height: 1.65;
+}
+
+.mh-meno-mission {
+  margin-top: 28px;
+  padding: 2px 0 2px 22px;
+  border-left: 3px solid var(--medhub-blue);
+}
+
+.mh-meno-mission p {
+  font-size: 1.1rem;
+  color: var(--color-text);
+}
+
+.mh-meno-mission p:first-child {
+  font-weight: 700;
+  color: var(--color-navy);
+}
+
+.mh-meno-mission p:last-child {
+  margin-bottom: 0;
+}
+
+.mh-meno-sources {
+  margin-top: 48px;
+  padding-top: 20px;
+  border-top: 1px solid var(--color-border);
+}
+
+.mh-meno-sources h3 {
+  margin-bottom: 12px;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--color-text-muted);
+}
+
+.mh-meno-sources ol {
+  padding-left: 1.4em;
+  font-size: 0.88rem;
+  line-height: 1.55;
+}
+
+.mh-meno-sources li + li {
+  margin-top: 6px;
+}
+
+@media (max-width: 1024px) {
+  .mh-meno-facts {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .mh-meno-fact:nth-child(odd) {
+    padding-left: 0;
+    border-left: 0;
+  }
+
+  .mh-meno-fact:nth-child(even) {
+    padding-right: 0;
+  }
+
+  .mh-meno-fact:nth-child(n + 3) {
+    border-top: 1px solid var(--color-border);
+  }
+}
+
+@media (max-width: 767px) {
+  .mh-meno-facts {
+    grid-template-columns: 1fr;
+    margin-top: 36px;
+  }
+
+  .mh-meno-fact {
+    padding: 24px 0 4px;
+    border-left: 0;
+  }
+
+  .mh-meno-fact + .mh-meno-fact {
+    border-top: 1px solid var(--color-border);
+  }
+
+  .mh-meno-fact-figure {
+    font-size: 2.6rem;
+  }
+
+  .mh-meno-why-closing {
+    margin-top: 40px;
+    padding-top: 32px;
+  }
+
+  .mh-meno-why-closing h3 {
+    font-size: 1.35rem;
+  }
+
+  .mh-meno-mission {
+    padding-left: 16px;
+  }
+
+  .mh-meno-mission p {
+    font-size: 1.05rem;
+  }
+}

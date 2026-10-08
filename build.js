@@ -56,6 +56,7 @@ const NAV = [
       { slug: 'napriamy-likuvannia', href: '/napriamy-likuvannia/', label: 'Напрями лікування' },
       { slug: 'diagnostyka', href: '/diagnostyka/', label: 'Діагностика' },
       { slug: 'likuvannia-v-izraili', href: '/likuvannia-v-izraili/', label: 'Лікування в Ізраїлі' },
+      { slug: 'menopauza', href: '/menopauza/', label: 'Менопауза' },
     ],
   },
   { slug: 'likari', href: '/likari/', label: 'Лікарі' },
@@ -71,6 +72,7 @@ const NAV_EN = [
   { slug: 'napriamy-likuvannia', href: '/en/treatment-directions/', label: 'Treatment Directions' },
   { slug: 'likari', href: '/en/doctors/', label: 'Doctors' },
   { slug: 'patsiientam', href: '/en/patients/', label: 'Patients' },
+  { slug: 'menopauza', href: '/en/menopause/', label: 'Menopause' },
   { slug: 'kontakty', href: '/en/contacts/', label: 'Contacts' },
 ];
 
@@ -84,6 +86,7 @@ const PAGE_FAMILIES = {
   likari: { uk: '/likari/', en: '/en/doctors/' },
   patsiientam: { uk: '/patsiientam/', en: '/en/patients/' },
   kontakty: { uk: '/kontakty/', en: '/en/contacts/' },
+  menopauza: { uk: '/menopauza/', en: '/en/menopause/' },
 };
 
 function navItemHtml(item, activeSlug, mobile) {
@@ -242,6 +245,7 @@ function renderFooter(lang = 'uk') {
   const doctors = en ? '/en/doctors/' : '/likari/';
   const patients = en ? '/en/patients/' : '/patsiientam/';
   const contacts = en ? '/en/contacts/' : '/kontakty/';
+  const menopause = en ? '/en/menopause/' : '/menopauza/';
   const repLine = en ? REP_LINE_EN : REP_LINE;
   const disclosure = en ? LEGAL_DISCLOSURE_EN : LEGAL_DISCLOSURE;
 
@@ -249,14 +253,14 @@ function renderFooter(lang = 'uk') {
     ? {
         fbAria: 'Facebook MEDHUB', contactTitle: 'Contact MEDHUB in Ukraine',
         colMedhub: 'MEDHUB', aboutMedhub: 'About MEDHUB', shebaLink: 'Sheba Medical Center', directionsLink: 'Treatment Directions', doctorsLink: 'Sheba Doctors',
-        colPatients: 'Patients', howToReach: 'How to Reach Us', sendDocs: 'Send Documents', faq: 'FAQ', contactsLink: 'Contacts',
+        colPatients: 'Patients', howToReach: 'How to Reach Us', sendDocs: 'Send Documents', faq: 'FAQ', menopauseLink: 'Menopause &amp; Women’s Health 40+', contactsLink: 'Contacts',
         colContacts: 'MEDHUB Contacts', phoneLabel: 'Phone: +380 67 406 73 57 (Ukrainian language)', waLabel: 'WhatsApp: +380 67 406 73 57 (Ukrainian language)', emailLabel: 'Email: info@medhub.group',
         rights: 'All rights reserved.', privacy: 'Privacy Policy', terms: 'Terms of Use',
       }
     : {
         fbAria: 'Facebook MEDHUB', contactTitle: "Зв'яжіться з MEDHUB в Україні",
         colMedhub: 'MEDHUB', aboutMedhub: 'Про MEDHUB', shebaLink: 'Sheba Medical Center', directionsLink: 'Напрями лікування', doctorsLink: 'Лікарі Sheba',
-        colPatients: 'Пацієнтам', howToReach: 'Як звернутися', sendDocs: 'Надіслати документи', faq: 'Часті запитання', contactsLink: 'Контакти',
+        colPatients: 'Пацієнтам', howToReach: 'Як звернутися', sendDocs: 'Надіслати документи', faq: 'Часті запитання', menopauseLink: 'Менопауза та здоров’я 40+', contactsLink: 'Контакти',
         colContacts: 'Контакти MEDHUB', phoneLabel: 'Телефон: +380 67 406 73 57 (українська мова)', waLabel: 'WhatsApp: +380 67 406 73 57 (українська мова)', emailLabel: 'Email: info@medhub.group',
         rights: 'Усі права захищені.', privacy: 'Політика конфіденційності', terms: 'Умови використання',
       };
@@ -305,6 +309,7 @@ ${en ? '' : '        <li><a href="/diagnostyka/">Діагностика</a></li>
         <li><a href="${patients}">${t.howToReach}</a></li>
         <li><a href="${contacts}#contact-form">${t.sendDocs}</a></li>
         <li><a href="${patients}#faq">${t.faq}</a></li>
+        <li><a href="${menopause}">${t.menopauseLink}</a></li>
         <li><a href="${contacts}">${t.contactsLink}</a></li>
       </ul>
     </div>
@@ -342,7 +347,12 @@ ${en ? '' : '        <li><a href="/diagnostyka/">Діагностика</a></li>
 // minimum-fill-time check when it's unset.
 const TURNSTILE_SITE_KEY = '';
 
-function renderConsultationForm(lang = 'uk', sourcePage = '/kontakty/') {
+// `extra` is optional and page-specific — called without it (every page
+// except /menopauza/), the form markup is unchanged:
+//   countryLabel — overrides the label of the existing `country` field;
+//   topic        — { label, placeholder, options: [...] } adds an optional
+//                  `topic` <select>, which the Worker adds to the email.
+function renderConsultationForm(lang = 'uk', sourcePage = '/kontakty/', extra = {}) {
   const en = lang === 'en';
   const t = en
     ? {
@@ -386,10 +396,18 @@ function renderConsultationForm(lang = 'uk', sourcePage = '/kontakty/') {
         </div>
 
         <div class="form-row">
-          <label for="country">${t.country}</label>
+          <label for="country">${extra.countryLabel || t.country}</label>
           <input type="text" id="country" name="country" autocomplete="country-name" required>
         </div>
-
+${extra.topic ? `
+        <div class="form-row">
+          <label for="topic">${extra.topic.label}</label>
+          <select id="topic" name="topic">
+            <option value="">${extra.topic.placeholder}</option>
+${extra.topic.options.map((o) => `            <option>${o}</option>`).join('\n')}
+          </select>
+        </div>
+` : ''}
         <div class="form-row">
           <label for="message">${t.message}</label>
           <textarea id="message" name="message" rows="4"></textarea>
@@ -539,8 +557,8 @@ const MEDHUB_SCHEMA_EN = { ...MEDHUB_SCHEMA, description: LEGAL_DISCLOSURE_EN };
 // BreadcrumbList schema can carry a URL for each step). Returns both the
 // visible nav markup and the matching JSON-LD object — pass .schema into
 // the page's `schema` array and prepend .html to mainHtml.
-function crumbs(items) {
-  const html = `  <nav class="breadcrumbs" aria-label="Хлібні крихти">
+function crumbs(items, ariaLabel = 'Хлібні крихти') {
+  const html = `  <nav class="breadcrumbs" aria-label="${ariaLabel}">
     <div class="container">
       <ol>
 ${items.map(([name, href], i) => i === items.length - 1
@@ -2845,6 +2863,466 @@ pages.push({
   </section>
 `,
 });
+
+// ===== МЕНОПАУЗА / MENOPAUSE (women's health 40+) =========================
+// One layout (renderMenopausePage) shared by both languages; every visible
+// string lives in MENOPAUSE_CONTENT below, so UA/EN can't drift apart
+// structurally. Positioning rule for this section: MEDHUB helps patients
+// find an independent specialist and request an online consultation — it
+// never diagnoses, treats or provides medical services itself. No doctor
+// names, photos, credentials, authors, reviewers or ratings until real,
+// verified data is supplied.
+
+// Future article series. Each entry keeps both locales together so the UA
+// and EN versions of an article stay linked. While `href` is null the card
+// renders as a non-link "coming soon" card; once an article is published,
+// set its localized href (e.g. '/menopauza/<slug>/', '/en/menopause/<slug>/')
+// and the card becomes a link. Same shape a CMS/API feed would return.
+const MENOPAUSE_ARTICLES = [
+  {
+    id: 'stages',
+    uk: { title: 'Перименопауза, менопауза та постменопауза: у чому різниця', href: null },
+    en: { title: 'Perimenopause, Menopause and Postmenopause: What’s the Difference?', href: null },
+  },
+  {
+    id: 'hot-flashes',
+    uk: { title: 'Припливи та нічна пітливість: чому виникають і що може допомогти', href: null },
+    en: { title: 'Hot Flashes and Night Sweats: Why They Happen and What Can Help', href: null },
+  },
+  {
+    id: 'hormone-tests',
+    uk: { title: 'Чи потрібно здавати гормони, щоб діагностувати менопаузу?', href: null },
+    en: { title: 'Do You Need Hormone Tests to Diagnose Menopause?', href: null },
+  },
+  {
+    id: 'hormone-therapy',
+    uk: { title: 'Гормональна терапія при менопаузі: що важливо знати', href: null },
+    en: { title: 'Menopausal Hormone Therapy: What You Need to Know', href: null },
+  },
+  {
+    id: 'vaginal-dryness',
+    uk: { title: 'Сухість, дискомфорт і секс після менопаузи', href: null },
+    en: { title: 'Vaginal Dryness, Discomfort and Sex After Menopause', href: null },
+  },
+  {
+    id: 'twenty-questions',
+    uk: { title: '20 запитань про менопаузу, які жінки часто не встигають поставити лікарю', href: null },
+    en: { title: '20 Menopause Questions Women Often Don’t Get a Chance to Ask Their Doctor', href: null },
+  },
+];
+
+// Primary sources for the "why" block — official publishers only, URLs
+// verified against the live pages (Oct 2026). Every figure on the page
+// must be traceable to one of these.
+const MENOPAUSE_SOURCES = {
+  who: { label: 'World Health Organization: Menopause', url: 'https://www.who.int/news-room/fact-sheets/detail/menopause' },
+  ahrq: { label: 'Agency for Healthcare Research and Quality: Special Emphasis Notice NOT-HS-25-009', url: 'https://grants.nih.gov/grants/guide/notice-files/NOT-HS-25-009.html' },
+  menopauseSociety: { label: 'The Menopause Society: Family Physicians Lack Formal, Consistent Menopause Care Training, September 30, 2026', url: 'https://menopause.org/press-releases/family-physicians-lack-formal-consistent-menopause-care-training' },
+  acog: { label: 'American College of Obstetricians and Gynecologists: Introduction to Menopause: A Starter Course, 2026', url: 'https://annualmeeting.acog.org/pre-meeting-courses/' },
+};
+
+const MENOPAUSE_CONTENT = {
+  uk: {
+    outPath: 'menopauza/index.html',
+    canonicalPath: '/menopauza/',
+    homeLabel: 'Головна',
+    homePath: '/',
+    crumbLabel: 'Менопауза',
+    crumbsAria: 'Хлібні крихти',
+    title: 'Менопауза та здоров’я жінок 40+ | MEDHUB',
+    description: 'Перименопауза та менопауза: симптоми, обстеження, гормональна і негормональна терапія, сексуальне здоров’я та онлайн-консультації фахівців через MEDHUB.',
+    conditionName: 'Менопауза',
+    h1: 'Менопауза без міфів',
+    subtitle: 'Сучасна інформація про здоров’я жінок 40+',
+    intro: [
+      'Перименопауза та менопауза — природні етапи життя жінки, але симптоми, які їх супроводжують, не обов’язково потрібно просто терпіти.',
+      'Припливи, порушення сну, зміни настрою, сухість і дискомфорт, зміни сексуального бажання, ваги та загального самопочуття можуть суттєво впливати на якість життя.',
+      'У MEDHUB ми пояснюємо ці питання зрозумілою мовою, спираючись на сучасні медичні дані. Через MEDHUB ви можете знайти фахівця та подати заявку на індивідуальну онлайн-консультацію.',
+    ],
+    ctaArticles: 'Читати матеріали',
+    ctaDoctors: 'Знайти фахівця',
+    ctaConsultation: 'Записатися на консультацію',
+    why: {
+      eyebrow: 'Чому ми говоримо про це',
+      heading: 'Менопауза — проблема, якій надто довго приділяли надто мало уваги',
+      lead: [
+        'Сучасна медицина дуже уважно супроводжує жінку протягом репродуктивного періоду: контрацепція, вагітність, пологи, профілактичні огляди, онкологічний скринінг.',
+        'Але приблизно у віці 45–55 років жінка входить в один із найбільших фізіологічних переходів свого життя — і система охорони здоров’я далеко не завжди готова надати їй достатньо інформації, підтримки та кваліфікованої допомоги.',
+        'Це не просто наше враження.',
+        'Всесвітня організація охорони здоров’я (ВООЗ) зазначає, що про менопаузу часто не говорять — ні в родинах і громадах, ні на роботі, ні навіть у медичних закладах, а в навчальних програмах багатьох медичних працівників цій темі наразі приділяється обмежена увага.',
+        'ВООЗ також прямо зазначає, що в багатьох країнах немає достатньої державної політики та фінансування для того, щоб діагностика, консультування та лікування симптомів менопаузи були звичайною частиною медичної допомоги.',
+      ],
+      facts: [
+        {
+          figure: '45–55', caption: 'років', title: '45–55 років',
+          text: ['Саме в цьому віковому діапазоні у більшості жінок настає природна менопауза.'],
+          source: 'who', sourceLabel: 'World Health Organization — Menopause',
+        },
+        {
+          figure: '1,5 млн+', caption: 'жінок щороку', title: 'Понад 1,5 млн жінок щороку',
+          text: [
+            'За оцінкою федерального Agency for Healthcare Research and Quality, понад 1,5 мільйона жінок у США щороку проходять через менопаузу.',
+            'До 80% жінок у період менопаузального переходу мають вазомоторні симптоми — припливи та нічну пітливість. У частини жінок вони можуть тривати понад сім років.',
+          ],
+          source: 'ahrq', sourceLabel: 'AHRQ — Special Emphasis Notice NOT-HS-25-009, December 2024',
+        },
+        {
+          figure: '56%', caption: 'керівників програм вважають, що підготовку потрібно покращити', title: '56% керівників програм вважають, що підготовку потрібно покращити',
+          text: [
+            'У національному дослідженні програм сімейної медицини США, опублікованому у 2026 році, 279 керівників програм відповіли на питання щодо навчання менопаузальній медицині.',
+            '94% повідомили, що менопауза так чи інакше входить до навчальної програми, але 56% вважають, що підготовку необхідно покращити.',
+            'Дослідники також звернули увагу на відсутність стандартизованої формальної оцінки компетентності у цій сфері.',
+          ],
+          source: 'menopauseSociety', sourceLabel: 'The Menopause Society — Family Physicians Lack Formal, Consistent Menopause Care Training, September 30, 2026',
+        },
+        {
+          figure: '&lt; 1/3', caption: 'програм резидентури OB-GYN', title: 'Менше третини програм OB-GYN',
+          text: [
+            'American College of Obstetricians and Gynecologists у матеріалах свого освітнього курсу з менопаузи вказує на опубліковану оцінку, за якою менше третини програм резидентури з акушерства та гінекології мають навчальну програму з менопаузи.',
+            'ACOG також зазначає, що багато практикуючих акушерів-гінекологів не почуваються достатньо впевнено, працюючи з питаннями менопаузи.',
+          ],
+          source: 'acog', sourceLabel: 'American College of Obstetricians and Gynecologists — Introduction to Menopause: A Starter Course, 2026',
+        },
+      ],
+      conclusionHeading: 'Жіноче здоров’я не закінчується разом із репродуктивним віком',
+      conclusion: [
+        'Менопауза — це не просто момент, коли припиняються менструації.',
+        'Зміни цього періоду можуть стосуватися сну, терморегуляції, настрою, сексуального здоров’я, сечостатевої системи, кісткової тканини, обміну речовин, серцево-судинного здоров’я та загальної якості життя.',
+        'І все це відбувається у віці, коли попереду у жінки можуть бути ще десятиліття активного життя.',
+      ],
+      mission: [
+        'Саме тому MEDHUB хоче серйозно зайнятися цими питаннями.',
+        'Ми хочемо говорити про менопаузу без міфів, сорому та псевдомедицини — мовою сучасної доказової медицини.',
+        'І ми хочемо залучати до цієї роботи сильних фахівців міжнародного рівня з Ізраїлю, України та інших країн, щоб жінка могла не лише прочитати інформацію, а й за потреби знайти спеціаліста та отримати індивідуальну професійну консультацію.',
+      ],
+      sourcesHeading: 'Джерела',
+      sourcePrefix: 'Джерело:',
+      newTab: '(відкривається в новій вкладці)',
+    },
+    topicsHeading: 'З якими питаннями стикаються жінки',
+    topics: [
+      'Припливи та нічна пітливість',
+      'Порушення сну',
+      'Зміни менструального циклу',
+      'Перепади настрою та тривожність',
+      'Зміни ваги',
+      'Сухість і дискомфорт',
+      'Сексуальне здоров’я та лібідо',
+      'Здоров’я кісток',
+      'Серцево-судинні ризики',
+      'Гормональна терапія',
+      'Негормональні методи лікування',
+      'Які аналізи та обстеження справді потрібні',
+    ],
+    articlesHeading: 'Розбираємося разом',
+    articlesIntro: 'Ми запускаємо серію матеріалів про перименопаузу, менопаузу та здоров’я жінок після 40 років.',
+    articleSoon: 'Незабаром',
+    articleRead: 'Читати статтю',
+    doctorsHeading: 'Онлайн-консультації з фахівцями',
+    doctorsText: [
+      'MEDHUB співпрацює з фахівцями з різних країн, зокрема з лікарями з України та Ізраїлю. Ви можете ознайомитися з професійним профілем фахівця та подати заявку на онлайн-консультацію.',
+      'Можливість проведення медичної консультації залежить від країни перебування пацієнта, ліцензії фахівця та чинних правил телемедицини.',
+    ],
+    doctorsPlaceholder: 'Профілі фахівців незабаром з’являться',
+    doctorsCta: 'Повідомити мене про запуск консультацій',
+    consultHeading: 'Маєте запитання, яке потребує індивідуальної відповіді?',
+    consultText: [
+      'Симптоми менопаузи та вибір лікування індивідуальні. Якщо загальної інформації недостатньо, ви можете подати заявку на онлайн-консультацію з фахівцем, з яким співпрацює MEDHUB.',
+      'Заповніть заявку — координатор MEDHUB зв’яжеться з вами, щоб уточнити запит і допомогти підібрати фахівця.',
+    ],
+    consultNote: 'Медичну консультацію проводить обраний фахівець відповідно до своєї професійної кваліфікації, ліцензування та правил, що застосовуються за місцем перебування пацієнта.',
+    form: {
+      countryLabel: 'Країна, де ви зараз перебуваєте',
+      topic: { label: 'Тема консультації', placeholder: 'Оберіть тему (необов’язково)', other: 'Інше' },
+    },
+    disclaimerAria: 'Медичне застереження',
+    disclaimer: 'Інформація на цій сторінці має освітній характер і не замінює індивідуальну медичну консультацію, діагностику або лікування. У разі появи нових, незвичних або виражених симптомів слід звернутися до медичного фахівця.',
+  },
+  en: {
+    outPath: 'en/menopause/index.html',
+    canonicalPath: '/en/menopause/',
+    homeLabel: 'Home',
+    homePath: '/en/',
+    crumbLabel: 'Menopause',
+    crumbsAria: 'Breadcrumbs',
+    title: 'Menopause &amp; Women’s Health 40+ | MEDHUB',
+    description: 'Perimenopause and menopause: symptoms, testing, hormone and non-hormonal treatment, sexual health, and online consultations with specialists through MEDHUB.',
+    conditionName: 'Menopause',
+    h1: 'Menopause Without Myths',
+    subtitle: 'Modern, evidence-based information for women 40+',
+    intro: [
+      'Perimenopause and menopause are natural stages of a woman’s life, but the symptoms that come with them do not simply have to be endured.',
+      'Hot flashes, sleep problems, mood changes, vaginal dryness and discomfort, changes in sexual desire, weight, and overall well-being can significantly affect quality of life.',
+      'At MEDHUB, we explain these issues in clear language, based on current medical evidence. Through MEDHUB, you can find a specialist and request an individual online consultation.',
+    ],
+    ctaArticles: 'Read Articles',
+    ctaDoctors: 'Find a Specialist',
+    ctaConsultation: 'Book a Consultation',
+    why: {
+      eyebrow: 'Why We Are Talking About This',
+      heading: 'Menopause Has Been Overlooked for Far Too Long',
+      lead: [
+        'Modern medicine pays close attention to women throughout their reproductive years: contraception, pregnancy, childbirth, preventive care, and cancer screening.',
+        'But around the ages of 45–55, women enter one of the major physiological transitions of their lives — and healthcare systems are not always prepared to provide adequate information, support, and specialized care.',
+        'This is not simply our impression.',
+        'The World Health Organization notes that menopause is often not discussed within families, communities, workplaces, or even healthcare settings, and that it currently receives limited attention in the training curricula of many healthcare workers.',
+        'WHO also states that many governments do not have sufficient health policies and financing to include menopause-related diagnosis, counselling, and treatment as routinely available healthcare services.',
+      ],
+      facts: [
+        {
+          figure: '45–55', caption: 'years', title: '45–55 years',
+          text: ['Most women experience natural menopause within this age range.'],
+          source: 'who', sourceLabel: 'World Health Organization — Menopause',
+        },
+        {
+          figure: '1.5M+', caption: 'women every year', title: 'More than 1.5 million women every year',
+          text: [
+            'The U.S. Agency for Healthcare Research and Quality estimates that more than 1.5 million women in the United States experience menopause each year.',
+            'Up to 80% of women going through the menopause transition experience vasomotor symptoms such as hot flashes and night sweats, which in some women can persist for more than seven years.',
+          ],
+          source: 'ahrq', sourceLabel: 'AHRQ — Special Emphasis Notice NOT-HS-25-009, December 2024',
+        },
+        {
+          figure: '56%', caption: 'say menopause training needs improvement', title: '56% say menopause training needs improvement',
+          text: [
+            'In a 2026 national study of U.S. family medicine residency programs, 279 program directors answered menopause-specific questions.',
+            'Although 94% reported either a dedicated menopause curriculum or menopause education integrated into a broader women’s health curriculum, 56% agreed that menopause education needs to improve.',
+            'The study also highlighted the lack of standardized formal competency assessment.',
+          ],
+          source: 'menopauseSociety', sourceLabel: 'The Menopause Society — Family Physicians Lack Formal, Consistent Menopause Care Training, September 30, 2026',
+        },
+        {
+          figure: '&lt; 1/3', caption: 'of OB-GYN residency programs', title: 'Fewer than one-third of OB-GYN residency programs',
+          text: [
+            'The American College of Obstetricians and Gynecologists cites a published needs assessment showing that fewer than one-third of obstetrics and gynecology residency programs have a menopause curriculum.',
+            'ACOG also notes that many practicing obstetrician-gynecologists feel uncomfortable addressing menopause concerns.',
+          ],
+          source: 'acog', sourceLabel: 'American College of Obstetricians and Gynecologists — Introduction to Menopause: A Starter Course, 2026',
+        },
+      ],
+      conclusionHeading: 'Women’s health does not end with the reproductive years',
+      conclusion: [
+        'Menopause is not simply the moment when menstrual periods stop.',
+        'The transition can affect sleep, temperature regulation, mood, sexual health, the genitourinary system, bone health, metabolism, cardiovascular health, and overall quality of life.',
+        'And it happens at a stage when a woman may still have decades of active life ahead of her.',
+      ],
+      mission: [
+        'That is why MEDHUB intends to take these issues seriously.',
+        'We want to talk about menopause without myths, stigma, or pseudomedicine — using the language of modern evidence-based medicine.',
+        'And we want to bring strong international specialists from Israel, Ukraine, and other countries into this work, so that women can not only find reliable information but, when needed, find an appropriate specialist and request an individual professional consultation.',
+      ],
+      sourcesHeading: 'Sources',
+      sourcePrefix: 'Source:',
+      newTab: '(opens in a new tab)',
+    },
+    topicsHeading: 'Common concerns women experience',
+    topics: [
+      'Hot flashes and night sweats',
+      'Sleep problems',
+      'Changes in the menstrual cycle',
+      'Mood changes and anxiety',
+      'Weight changes',
+      'Vaginal dryness and discomfort',
+      'Sexual health and libido',
+      'Bone health',
+      'Cardiovascular health',
+      'Menopausal hormone therapy',
+      'Non-hormonal treatment options',
+      'Which tests and examinations are actually needed',
+    ],
+    articlesHeading: 'Understanding Menopause',
+    articlesIntro: 'We are launching a series of practical, evidence-based articles about perimenopause, menopause, and women’s health after 40.',
+    articleSoon: 'Coming soon',
+    articleRead: 'Read article',
+    doctorsHeading: 'Online Consultations with Specialists',
+    doctorsText: [
+      'MEDHUB works with medical specialists from different countries, including physicians from Ukraine and Israel. You can review a specialist’s professional profile and request an online consultation.',
+      'The availability of medical consultations depends on the patient’s location, the specialist’s professional licensing, and applicable telemedicine regulations.',
+    ],
+    doctorsPlaceholder: 'Specialist profiles are coming soon',
+    doctorsCta: 'Notify Me When Consultations Launch',
+    consultHeading: 'Have a Question That Needs an Individual Answer?',
+    consultText: [
+      'Menopause symptoms and treatment decisions are highly individual. If general information is not enough, you can request an online consultation with a specialist MEDHUB works with.',
+      'Fill in the request form — a MEDHUB coordinator will contact you to clarify your request and help find a suitable specialist.',
+    ],
+    consultNote: 'Medical consultations are provided by the selected specialist subject to their professional qualifications, licensing, and the rules applicable to the patient’s location.',
+    form: {
+      countryLabel: 'Country where you are currently located',
+      topic: { label: 'Consultation topic', placeholder: 'Choose a topic (optional)', other: 'Other' },
+    },
+    disclaimerAria: 'Medical disclaimer',
+    disclaimer: 'The information on this page is for educational purposes only and is not a substitute for individual medical advice, diagnosis, or treatment. If you develop new, unusual, or significant symptoms, you should consult a qualified healthcare professional.',
+  },
+};
+
+const ARROW_ICON = (stroke) => `<span class="btn-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9 6l6 6-6 6" stroke="${stroke}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>`;
+
+function menopauseArticleCard(article, c, index) {
+  const num = String(index + 1).padStart(2, '0');
+  const inner = `
+          <span class="mh-meno-article-num" aria-hidden="true">${num}</span>
+          <h3>${article.title}</h3>`;
+  if (article.href) {
+    return `        <a class="direction-card mh-meno-article" href="${article.href}">${inner}
+          <span class="mh-meno-article-status mh-meno-article-status--link">${c.articleRead} →</span>
+        </a>`;
+  }
+  return `        <div class="direction-card mh-meno-article is-soon">${inner}
+          <span class="mh-meno-article-status">${c.articleSoon}</span>
+        </div>`;
+}
+
+function menopauseSourceLink(key, label, newTab) {
+  return `<a href="${MENOPAUSE_SOURCES[key].url}" target="_blank" rel="noopener noreferrer">${label}<span class="mh-meno-sr"> ${newTab}</span></a>`;
+}
+
+// Editorial "why this matters" block: lead, four sourced figures, closing
+// mission statement, sources list.
+function menopauseWhyBlock(w) {
+  return `  <section class="section mh-meno-why" aria-labelledby="mh-meno-why-heading">
+    <div class="container">
+      <span class="eyebrow">${w.eyebrow}</span>
+      <h2 id="mh-meno-why-heading">${w.heading}</h2>
+      <div class="mh-meno-why-lead">
+${w.lead.map((p) => `        <p>${p}</p>`).join('\n')}
+      </div>
+
+      <ul class="mh-meno-facts">
+${w.facts.map((f) => `        <li class="mh-meno-fact">
+          <h3 class="mh-meno-fact-title"><span class="mh-meno-sr">${f.title}</span><span aria-hidden="true"><span class="mh-meno-fact-figure">${f.figure}</span><span class="mh-meno-fact-caption">${f.caption}</span></span></h3>
+${f.text.map((p) => `          <p>${p}</p>`).join('\n')}
+          <p class="mh-meno-fact-source">${w.sourcePrefix} ${menopauseSourceLink(f.source, f.sourceLabel, w.newTab)}</p>
+        </li>`).join('\n')}
+      </ul>
+
+      <div class="mh-meno-why-closing">
+        <h3>${w.conclusionHeading}</h3>
+${w.conclusion.map((p) => `        <p>${p}</p>`).join('\n')}
+        <div class="mh-meno-mission">
+${w.mission.map((p) => `          <p>${p}</p>`).join('\n')}
+        </div>
+      </div>
+
+      <div class="mh-meno-sources">
+        <h3>${w.sourcesHeading}</h3>
+        <ol>
+${Object.keys(MENOPAUSE_SOURCES).map((k) => `          <li>${menopauseSourceLink(k, MENOPAUSE_SOURCES[k].label, w.newTab)}</li>`).join('\n')}
+        </ol>
+      </div>
+    </div>
+  </section>`;
+}
+
+function renderMenopausePage(lang) {
+  const c = MENOPAUSE_CONTENT[lang];
+  const en = lang === 'en';
+  const bc = crumbs([[c.homeLabel, c.homePath], [c.crumbLabel, c.canonicalPath]], c.crumbsAria);
+  const webPageSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'MedicalWebPage',
+    name: c.h1,
+    description: c.description,
+    url: SITE_URL + c.canonicalPath,
+    inLanguage: lang,
+    about: { '@type': 'MedicalCondition', name: c.conditionName },
+    audience: { '@type': 'PeopleAudience', suggestedGender: 'female', suggestedMinAge: 40 },
+    publisher: { '@type': 'Organization', name: SITE_NAME, url: SITE_URL },
+  };
+
+  return {
+    slug: 'menopauza',
+    lang,
+    outPath: c.outPath,
+    title: c.title,
+    description: c.description,
+    canonicalPath: c.canonicalPath,
+    schema: [en ? MEDHUB_SCHEMA_EN : MEDHUB_SCHEMA, webPageSchema, bc.schema],
+    mainHtml: `<div class="mh-meno">
+${bc.html}${titleBand(c.h1)}
+
+  <section class="section page-intro mh-meno-intro">
+    <div class="container">
+      <p class="mh-meno-subtitle">${c.subtitle}</p>
+${c.intro.map((p) => `      <p>${p}</p>`).join('\n')}
+      <div class="hero-actions">
+        <a href="#articles" class="btn btn-pink">${c.ctaArticles}
+          ${ARROW_ICON('#fff')}
+        </a>
+        <a href="#doctors" class="btn btn-outline">${c.ctaDoctors}
+          ${ARROW_ICON('currentColor')}
+        </a>
+        <a href="#consultation" class="btn btn-outline">${c.ctaConsultation}
+          ${ARROW_ICON('currentColor')}
+        </a>
+      </div>
+    </div>
+  </section>
+
+${menopauseWhyBlock(c.why)}
+
+  <section class="section section-alt" aria-labelledby="mh-meno-topics-heading">
+    <div class="container">
+      <h2 id="mh-meno-topics-heading">${c.topicsHeading}</h2>
+      <ul class="mh-meno-topics">
+${c.topics.map((t) => `        <li>${t}</li>`).join('\n')}
+      </ul>
+    </div>
+  </section>
+
+  <section class="section" id="articles" aria-labelledby="mh-meno-articles-heading">
+    <div class="container">
+      <h2 id="mh-meno-articles-heading">${c.articlesHeading}</h2>
+      <p class="section-lead">${c.articlesIntro}</p>
+      <div class="directions-grid mh-meno-articles">
+${MENOPAUSE_ARTICLES.map((a, i) => menopauseArticleCard(a[lang], c, i)).join('\n')}
+      </div>
+    </div>
+  </section>
+
+  <section class="section support-section mh-meno-doctors" id="doctors" aria-labelledby="mh-meno-doctors-heading">
+    <div class="container">
+      <h2 id="mh-meno-doctors-heading">${c.doctorsHeading}</h2>
+      <div class="support-body">
+${c.doctorsText.map((p) => `        <p>${p}</p>`).join('\n')}
+      </div>
+      <p class="info-note mh-meno-placeholder">${c.doctorsPlaceholder}</p>
+      <a href="#consultation" class="btn btn-outline">${c.doctorsCta}
+        ${ARROW_ICON('currentColor')}
+      </a>
+    </div>
+  </section>
+
+  <section class="section form-section" id="consultation" aria-labelledby="mh-meno-consult-heading">
+    <div class="container form-section-inner">
+      <div class="form-intro">
+        <h2 id="mh-meno-consult-heading">${c.consultHeading}</h2>
+${c.consultText.map((p) => `        <p>${p}</p>`).join('\n')}
+        <p class="mh-meno-note">${c.consultNote}</p>
+      </div>
+${renderConsultationForm(lang, c.canonicalPath, {
+      countryLabel: c.form.countryLabel,
+      topic: {
+        label: c.form.topic.label,
+        placeholder: c.form.topic.placeholder,
+        options: [...c.topics, c.form.topic.other],
+      },
+    })}
+    </div>
+  </section>
+
+  <aside class="section mh-meno-disclaimer" aria-label="${c.disclaimerAria}">
+    <div class="container">
+      <p class="info-note">${c.disclaimer}</p>
+    </div>
+  </aside>
+</div>
+`,
+  };
+}
+
+pages.push(renderMenopausePage('uk'));
+pages.push(renderMenopausePage('en'));
 
 // ===== 404 =============================================================
 pages.push({
